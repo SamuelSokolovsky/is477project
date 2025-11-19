@@ -63,6 +63,6 @@ we anticipate possible integration challenges if the datasets use different iden
 to align correctly.
 
 ## References:
-Excel4Soccer. (2023). ESPN Soccer Data [Data set 1]. Kaggle. https://www.kaggle.com/datasets/excel4soccer/espn-soccer-dataSoham. (2023). 
+Excel4Soccer. (2023). ESPN Soccer Data [Data set 1]. Kaggle. https://www.kaggle.com/datasets/excel4soccer/espn-soccer-data Soham. (2023). 
 
 ESPN's Soccer Power Index [Data set 2]. Kaggle. https://www.kaggle.com/datasets/soham1024/espns-soccer-power-index
