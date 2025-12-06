@@ -1,0 +1,41 @@
+{
+  "generated_at": "2025-12-06T15:49:00.267822",
+  "total_files": 5,
+  "files": [
+    {
+      "path": "data\\raw\\Dataset 1\\teams.csv",
+      "checksum": "69a836fbba90e27561608d0cc175cc59c3ac675f2ae0374d1295d79c9e080f77",
+      "size": "503.40 KB",
+      "size_bytes": 515483,
+      "modified": "2025-12-06T03:23:20.947496"
+    },
+    {
+      "path": "data\\raw\\Dataset 1\\teamStats.csv",
+      "checksum": "a9f233ba3ad7f6e2c46af292bbe1e2e55d91453bff58ad1174fe3c744912440f",
+      "size": "11.24 MB",
+      "size_bytes": 11786885,
+      "modified": "2025-12-06T03:23:20.904925"
+    },
+    {
+      "path": "data\\raw\\Dataset 1\\standings.csv",
+      "checksum": "e872ee06d5f31ab05ad01a89cc802ced0ec95ac07268e16968ccde14ef3bb8b5",
+      "size": "637.52 KB",
+      "size_bytes": 652817,
+      "modified": "2025-12-06T03:23:20.998377"
+    },
+    {
+      "path": "data\\raw\\Dataset 1\\leagues.csv",
+      "checksum": "7677d3fe20eebe56780f7b2abbafc0e72b071da722675756ac8189f4647f7783",
+      "size": "138.28 KB",
+      "size_bytes": 141595,
+      "modified": "2025-12-06T03:23:20.834154"
+    },
+    {
+      "path": "data\\raw\\Dataset 2\\football-datasets\\datasets\\all_leagues_all_seasons.csv",
+      "checksum": "ca14e991b2b6cb6a828d984542366f38d575c78b9c5937fc87b3b05c7a81fa00",
+      "size": "5.23 MB",
+      "size_bytes": 5482063,
+      "modified": "2025-12-06T03:23:25.983021"
+    }
+  ]
+}

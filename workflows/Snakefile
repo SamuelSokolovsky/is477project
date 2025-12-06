@@ -1,0 +1,90 @@
+"""
+Snakemake Workflow for Soccer Analytics Pipeline
+=================================================
+This workflow automates the entire data analysis pipeline with proper
+dependency management.
+
+Usage:
+    snakemake --cores 4
+    snakemake --dag | dot -Tpng > workflow_dag.png
+"""
+
+# Configuration
+RAW_DATA = "data/raw"
+PROCESSED_DATA = "data/processed"
+METADATA = "data/metadata"
+OUTPUTS = "outputs"
+
+# Final outputs
+rule all:
+    input:
+        f"{OUTPUTS}/reports/data_quality_report.md",
+        f"{OUTPUTS}/reports/integration_report.md",
+        f"{OUTPUTS}/results/model_performance.csv",
+        f"{OUTPUTS}/figures/correlation_heatmap.png"
+
+# Rule 1: Data Acquisition
+rule acquire_data:
+    output:
+        checksums = f"{METADATA}/checksums.txt",
+        dataset1 = directory(f"{RAW_DATA}/Dataset 1"),
+        dataset2 = directory(f"{RAW_DATA}/Dataset 2")
+    script:
+        "../scripts/01_acquire.py"
+
+# Rule 2: Data Cleaning
+rule clean_data:
+    input:
+        dataset1 = f"{RAW_DATA}/Dataset 1",
+        dataset2 = f"{RAW_DATA}/Dataset 2"
+    output:
+        clean1 = f"{PROCESSED_DATA}/dataset1_clean.csv",
+        clean2 = f"{PROCESSED_DATA}/dataset2_clean.csv",
+        mappings = f"{METADATA}/team_name_mappings.csv"
+    script:
+        "../scripts/02_clean.py"
+
+# Rule 3: Data Integration
+rule integrate_data:
+    input:
+        clean1 = f"{PROCESSED_DATA}/dataset1_clean.csv",
+        clean2 = f"{PROCESSED_DATA}/dataset2_clean.csv",
+        mappings = f"{METADATA}/team_name_mappings.csv"
+    output:
+        integrated = f"{PROCESSED_DATA}/integrated_dataset.csv",
+        report = f"{OUTPUTS}/reports/integration_report.md"
+    script:
+        "../scripts/03_integrate.py"
+
+# Rule 4: Quality Assessment
+rule assess_quality:
+    input:
+        data = f"{PROCESSED_DATA}/integrated_dataset.csv"
+    output:
+        report = f"{OUTPUTS}/reports/data_quality_report.md",
+        figures = directory(f"{OUTPUTS}/figures/quality")
+    script:
+        "../scripts/04_quality.py"
+
+# Rule 5: Analysis & Modeling
+rule analyze:
+    input:
+        data = f"{PROCESSED_DATA}/integrated_dataset.csv",
+        quality_report = f"{OUTPUTS}/reports/data_quality_report.md"
+    output:
+        results = f"{OUTPUTS}/results/model_performance.csv",
+        models = directory(f"{OUTPUTS}/results/models")
+    script:
+        "../scripts/05_analyze.py"
+
+# Rule 6: Visualization
+rule visualize:
+    input:
+        data = f"{PROCESSED_DATA}/integrated_dataset.csv",
+        results = f"{OUTPUTS}/results/model_performance.csv"
+    output:
+        heatmap = f"{OUTPUTS}/figures/correlation_heatmap.png",
+        trends = f"{OUTPUTS}/figures/performance_trends.png",
+        comparison = f"{OUTPUTS}/figures/league_comparison.png"
+    script:
+        "../scripts/06_visualize.py"
