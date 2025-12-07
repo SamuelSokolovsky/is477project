@@ -5,8 +5,10 @@ This workflow automates the entire data analysis pipeline with proper
 dependency management.
 
 Usage:
-    snakemake --cores 4
+    snakemake --cores 1 --directory ..
     snakemake --dag | dot -Tpng > workflow_dag.png
+
+Note: Run from project root or use --directory to specify project root
 """
 
 # Configuration
@@ -15,46 +17,54 @@ PROCESSED_DATA = "data/processed"
 METADATA = "data/metadata"
 OUTPUTS = "outputs"
 
-# Final outputs
+# Final outputs - all key deliverables
 rule all:
     input:
-        f"{OUTPUTS}/reports/data_quality_report.md",
+        # Reports
+        f"{OUTPUTS}/reports/acquisition_report.md",
+        f"{OUTPUTS}/reports/cleaning_report.md",
         f"{OUTPUTS}/reports/integration_report.md",
-        f"{OUTPUTS}/results/model_performance.csv",
-        f"{OUTPUTS}/figures/correlation_heatmap.png"
+        f"{OUTPUTS}/reports/data_quality_report.md",
+        f"{OUTPUTS}/reports/analysis_report.md",
+        f"{OUTPUTS}/reports/visualization_report.md",
+        # Key data outputs
+        f"{PROCESSED_DATA}/integrated_dataset.csv",
+        f"{METADATA}/team_name_mappings.csv",
+        # Models
+        f"{OUTPUTS}/models/random_forest.pkl",
+        # Key visualizations
+        f"{OUTPUTS}/figures/quality/completeness_over_time.png",
+        f"{OUTPUTS}/figures/analysis/feature_importance.png",
+        f"{OUTPUTS}/figures/comprehensive/temporal_trends.png"
 
 # Rule 1: Data Acquisition
 rule acquire_data:
     output:
         checksums = f"{METADATA}/checksums.txt",
-        dataset1 = directory(f"{RAW_DATA}/Dataset 1"),
-        dataset2 = directory(f"{RAW_DATA}/Dataset 2")
-    script:
-        "../scripts/01_acquire.py"
+        acquisition_metadata = f"{METADATA}/acquisition_metadata.json",
+        report = f"{OUTPUTS}/reports/acquisition_report.md"
+    shell:
+        "python scripts/01_acquire.py"
 
 # Rule 2: Data Cleaning
 rule clean_data:
     input:
-        dataset1 = f"{RAW_DATA}/Dataset 1",
-        dataset2 = f"{RAW_DATA}/Dataset 2"
+        checksums = f"{METADATA}/checksums.txt"
     output:
-        clean1 = f"{PROCESSED_DATA}/dataset1_clean.csv",
-        clean2 = f"{PROCESSED_DATA}/dataset2_clean.csv",
-        mappings = f"{METADATA}/team_name_mappings.csv"
-    script:
-        "../scripts/02_clean.py"
+        mappings = f"{METADATA}/team_name_mappings.csv",
+        report = f"{OUTPUTS}/reports/cleaning_report.md"
+    shell:
+        "python scripts/02_clean.py"
 
 # Rule 3: Data Integration
 rule integrate_data:
     input:
-        clean1 = f"{PROCESSED_DATA}/dataset1_clean.csv",
-        clean2 = f"{PROCESSED_DATA}/dataset2_clean.csv",
         mappings = f"{METADATA}/team_name_mappings.csv"
     output:
         integrated = f"{PROCESSED_DATA}/integrated_dataset.csv",
         report = f"{OUTPUTS}/reports/integration_report.md"
-    script:
-        "../scripts/03_integrate.py"
+    shell:
+        "python scripts/03_integrate.py"
 
 # Rule 4: Quality Assessment
 rule assess_quality:
@@ -62,9 +72,11 @@ rule assess_quality:
         data = f"{PROCESSED_DATA}/integrated_dataset.csv"
     output:
         report = f"{OUTPUTS}/reports/data_quality_report.md",
-        figures = directory(f"{OUTPUTS}/figures/quality")
-    script:
-        "../scripts/04_quality.py"
+        fig1 = f"{OUTPUTS}/figures/quality/completeness_by_column.png",
+        fig2 = f"{OUTPUTS}/figures/quality/completeness_over_time.png",
+        fig3 = f"{OUTPUTS}/figures/quality/goals_distribution.png"
+    shell:
+        "python scripts/04_quality.py"
 
 # Rule 5: Analysis & Modeling
 rule analyze:
@@ -72,19 +84,47 @@ rule analyze:
         data = f"{PROCESSED_DATA}/integrated_dataset.csv",
         quality_report = f"{OUTPUTS}/reports/data_quality_report.md"
     output:
-        results = f"{OUTPUTS}/results/model_performance.csv",
-        models = directory(f"{OUTPUTS}/results/models")
-    script:
-        "../scripts/05_analyze.py"
+        report = f"{OUTPUTS}/reports/analysis_report.md",
+        model_lr = f"{OUTPUTS}/models/logistic_regression.pkl",
+        model_rf = f"{OUTPUTS}/models/random_forest.pkl",
+        model_gb = f"{OUTPUTS}/models/gradient_boosting.pkl",
+        scaler = f"{OUTPUTS}/models/scaler.pkl",
+        fig1 = f"{OUTPUTS}/figures/analysis/feature_importance.png",
+        fig2 = f"{OUTPUTS}/figures/analysis/confusion_matrices.png",
+        fig3 = f"{OUTPUTS}/figures/analysis/model_comparison.png"
+    shell:
+        "python scripts/05_analyze.py"
 
-# Rule 6: Visualization
+# Rule 6: Comprehensive Visualization
 rule visualize:
     input:
-        data = f"{PROCESSED_DATA}/integrated_dataset.csv",
-        results = f"{OUTPUTS}/results/model_performance.csv"
+        data = f"{PROCESSED_DATA}/integrated_dataset.csv"
     output:
-        heatmap = f"{OUTPUTS}/figures/correlation_heatmap.png",
-        trends = f"{OUTPUTS}/figures/performance_trends.png",
-        comparison = f"{OUTPUTS}/figures/league_comparison.png"
-    script:
-        "../scripts/06_visualize.py"
+        report = f"{OUTPUTS}/reports/visualization_report.md",
+        fig1 = f"{OUTPUTS}/figures/comprehensive/temporal_trends.png",
+        fig2 = f"{OUTPUTS}/figures/comprehensive/league_comparison.png",
+        fig3 = f"{OUTPUTS}/figures/comprehensive/team_performance.png",
+        fig4 = f"{OUTPUTS}/figures/comprehensive/home_advantage.png",
+        fig5 = f"{OUTPUTS}/figures/comprehensive/shot_efficiency.png",
+        fig6 = f"{OUTPUTS}/figures/comprehensive/seasonal_patterns.png",
+        fig7 = f"{OUTPUTS}/figures/comprehensive/correlation_heatmap.png"
+    shell:
+        "python scripts/06_visualize.py"
+
+# Utility rule: Clean all outputs (for testing reproducibility)
+rule clean:
+    shell:
+        """
+        rm -rf {PROCESSED_DATA}/*.csv
+        rm -rf {METADATA}/*.csv {METADATA}/*.txt {METADATA}/*.json
+        rm -rf {OUTPUTS}/reports/*.md
+        rm -rf {OUTPUTS}/figures/*
+        rm -rf {OUTPUTS}/models/*
+        """
+
+# Utility rule: Generate workflow diagram
+rule dag:
+    output:
+        "workflow_dag.png"
+    shell:
+        "snakemake --dag | dot -Tpng > workflow_dag.png"
