@@ -347,9 +347,11 @@ def main():
     raw_dir = Path("data/raw")
     processed_dir = Path("data/processed")
     metadata_dir = Path("data/metadata")
+    reports_dir = Path("outputs/reports")
 
     # Create output directories
     processed_dir.mkdir(parents=True, exist_ok=True)
+    reports_dir.mkdir(parents=True, exist_ok=True)
 
     # 1. Load Dataset 2 (match results)
     print("\n" + "=" * 60)
@@ -424,7 +426,7 @@ def main():
         'dataset1_leagues': len(df1_leagues_clean)
     }
 
-    generate_cleaning_report(stats, processed_dir)
+    generate_cleaning_report(stats, reports_dir)
 
     print("\n" + "=" * 60)
     print("[SUCCESS] DATA CLEANING COMPLETE!")

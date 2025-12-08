@@ -336,12 +336,17 @@ This project implements **full pipeline automation** using:
 
 ## Reproducing This Analysis
 
+**Quick Start:** For streamlined reproduction instructions, see [QUICK_START.md](QUICK_START.md)
+
+**Data Acquisition:** For detailed acquisition setup, see [DATA_ACQUISITION.md](DATA_ACQUISITION.md)
+
 ### Prerequisites
 
 - Python 3.11+ (tested on 3.11)
 - Git for version control
 - 2GB free disk space
 - Windows/Mac/Linux compatible
+- **Kaggle API credentials** (free account at https://www.kaggle.com)
 
 ### Step-by-Step Instructions
 
@@ -351,15 +356,7 @@ git clone [repository-url]
 cd is477project-main
 ```
 
-**2. Download source data**
-
-Data is available from Box: [BOX LINK TO BE ADDED]
-
-Place files in:
-- `data/raw/Dataset 1/` (ESPN data files)
-- `data/raw/Dataset 2/` (all_leagues_all_seasons.csv)
-
-**3. Install Python dependencies**
+**2. Install Python dependencies**
 ```bash
 pip install -r requirements.txt
 ```
@@ -371,8 +368,46 @@ Required packages:
 - matplotlib>=3.7.0
 - seaborn>=0.12.0
 - snakemake>=7.32.0 (optional, for workflow automation)
+- kagglehub>=0.2.0 (for data acquisition)
+- requests>=2.31.0 (for data acquisition)
 
-**4. Run the complete pipeline**
+**3. Set up Kaggle API credentials (one-time setup)**
+
+Follow the detailed instructions in [DATA_ACQUISITION.md](DATA_ACQUISITION.md#kaggle-api-setup), or quick steps:
+
+```bash
+# 1. Go to https://www.kaggle.com/settings
+# 2. Click "Create New API Token"
+# 3. Save kaggle.json to:
+#    - Linux/Mac: ~/.kaggle/kaggle.json
+#    - Windows: C:\Users\<USERNAME>\.kaggle\kaggle.json
+
+# On Linux/Mac, set permissions:
+chmod 600 ~/.kaggle/kaggle.json
+```
+
+**4. Acquire datasets programmatically**
+
+This project uses **fully automated data acquisition** for complete reproducibility:
+
+```bash
+python acquire_data.py
+```
+
+This will:
+- Download Dataset 1 (ESPN Soccer Data) from Kaggle (~12 MB)
+- Clone Dataset 2 (European Football Statistics) from GitHub (~5 MB)
+- Calculate SHA-256 checksums for all files
+- Generate acquisition metadata and reports
+
+**Expected runtime:** 3-5 minutes (depending on internet speed)
+
+**Verify data integrity:**
+```bash
+python acquire_data.py --verify-only
+```
+
+**5. Run the complete pipeline**
 
 **Option A: Run all scripts sequentially (recommended)**
 ```bash
@@ -394,7 +429,9 @@ python scripts/06_visualize.py    # Visualization generation
 snakemake --cores 1
 ```
 
-**5. View results**
+**Note:** The acquisition step (`acquire_data.py`) should be run before the pipeline scripts, as they depend on the downloaded data.
+
+**6. View results**
 
 After successful execution, outputs are organized in:
 ```
@@ -420,14 +457,16 @@ data/
 
 ### Expected Runtime
 
-- Phase 1 (Acquisition): ~30 seconds
+- **Data Acquisition** (acquire_data.py): ~3-5 minutes (one-time, internet-dependent)
+- Phase 1 (Acquisition & Validation): ~30 seconds
 - Phase 2 (Cleaning): ~45 seconds
 - Phase 3 (Integration): ~60 seconds
 - Phase 4 (Quality): ~90 seconds
 - Phase 5 (Modeling): ~120 seconds (model training)
 - Phase 6 (Visualization): ~60 seconds
 
-**Total runtime: ~6-8 minutes** on standard laptop (varies by hardware)
+**Total runtime: ~10-13 minutes** on standard laptop (varies by hardware and internet speed)
+**Pipeline only (after data acquired): ~6-8 minutes**
 
 ### Verifying Reproducibility
 

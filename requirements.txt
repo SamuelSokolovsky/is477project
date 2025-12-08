@@ -10,10 +10,12 @@ matplotlib>=3.7.0
 seaborn>=0.12.0
 
 # Workflow Automation
-snakemake>=7.32.0
+snakemake>=9.14.0
 
-# Data Quality & Validation
-hashlib
+# Data Acquisition
+kagglehub>=0.2.0      # For downloading Kaggle datasets
+requests>=2.31.0      # For HTTP requests (alternative download method)
+GitPython>=3.1.40     # For Git operations (optional)
 
 # Jupyter Support
 jupyter>=1.0.0

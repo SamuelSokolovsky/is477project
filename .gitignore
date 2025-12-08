@@ -1,19 +1,75 @@
-# Data files
+# Data files (raw data should NOT be in version control)
 data/raw/
+data/Dataset 1/
+data/Dataset 2/
 data/processed/*.csv
 *.xlsx
+*.zip
+*.tar.gz
+
+# Generated outputs (users will regenerate these)
+outputs/figures/
+outputs/models/
+outputs/reports/
+outputs/results/
+
+# Generated metadata (except checksums.txt which is a reference)
+data/metadata/*.json
+data/metadata/*.csv
+data/metadata/*.md
+
+# Data acquisition logs
+data_acquisition.log
+acquisition_output.txt
+
+# Kaggle credentials (NEVER commit this!)
+kaggle.json
+.kaggle/
 
 # Python
 __pycache__/
 *.pyc
+*.pyo
+*.pyd
+.Python
 .ipynb_checkpoints/
 venv/
+env/
 .env
+*.egg-info/
+
+# Snakemake
+.snakemake/
+.snakemake.log
 
 # IDE
 .vscode/
 .idea/
+*.swp
+*.swo
+*~
+
+# Personal Claude Code settings
+.claude/
 
 # OS
 .DS_Store
 Thumbs.db
+desktop.ini
+
+# Temporary files
+*.tmp
+*.bak
+*.log
+.cache/
+~$*.docx
+
+# Old/redundant project files
+Interrim status report.md
+ProjectPlan.v2.md
+preprocessing.ipynb
+
+# Course-specific files (not needed for reproducibility)
+IS477-FA25-Course-Project-Instructions.docx
+IS477-FA25-Course-Project-Overview.docx
+CLAUDE_CODE_GUIDE.md
