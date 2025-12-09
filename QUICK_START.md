@@ -24,7 +24,7 @@ pip install -r requirements.txt
 ### Step 3: Acquire Data Programmatically
 
 ```bash
-python acquire_data.py
+python scripts/01_acquire.py
 ```
 
 **What happens:**
@@ -40,7 +40,7 @@ python acquire_data.py
 ### Step 4: Verify Data Integrity
 
 ```bash
-python acquire_data.py --verify-only
+python scripts/01_acquire.py --verify-only
 ```
 
 Expected output:
@@ -101,7 +101,7 @@ ls outputs/models/
 
 **Solution:** The script is idempotent - just run it again:
 ```bash
-python acquire_data.py
+python scripts/01_acquire.py
 ```
 
 ---

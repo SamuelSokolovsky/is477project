@@ -82,7 +82,7 @@ set KAGGLE_KEY=your_api_key
 
 Run the data acquisition script:
 ```bash
-python acquire_data.py
+python scripts/01_acquire.py
 ```
 
 If successful, you should see:

@@ -63,7 +63,7 @@ Key packages for data acquisition:
 ### Step 1: Run the acquisition script
 
 ```bash
-python acquire_data.py
+python scripts/01_acquire.py
 ```
 
 That's it! The script will:
@@ -198,26 +198,26 @@ Kaggle config: /Users/yourname/.kaggle/kaggle.json exists: True
 
 ```bash
 # Download all datasets
-python acquire_data.py
+python scripts/01_acquire.py
 ```
 
 ### Command-Line Options
 
 ```bash
 # Force re-download (even if data exists)
-python acquire_data.py --force
+python scripts/01_acquire.py --force
 
 # Skip Kaggle dataset (only download GitHub data)
-python acquire_data.py --skip-kaggle
+python scripts/01_acquire.py --skip-kaggle
 
 # Skip GitHub dataset (only download Kaggle data)
-python acquire_data.py --skip-github
+python scripts/01_acquire.py --skip-github
 
 # Only verify checksums (don't download)
-python acquire_data.py --verify-only
+python scripts/01_acquire.py --verify-only
 
 # Get help
-python acquire_data.py --help
+python scripts/01_acquire.py --help
 ```
 
 ### What Happens During Acquisition
@@ -257,7 +257,7 @@ After successful acquisition, your project structure will be:
 
 ```
 is477project-main/
-├── acquire_data.py                 # Data acquisition script
+├── scripts/01_acquire.py                 # Data acquisition script
 ├── data/
 │   ├── raw/
 │   │   ├── Dataset 1/             # Kaggle data
@@ -300,7 +300,7 @@ SHA-256 checksums ensure:
 **Method 1: Using the acquisition script**
 
 ```bash
-python acquire_data.py --verify-only
+python scripts/01_acquire.py --verify-only
 ```
 
 Expected output:
@@ -404,10 +404,10 @@ pip install -r requirements.txt
 **Solution:**
 ```bash
 # The script is idempotent - safe to re-run
-python acquire_data.py
+python scripts/01_acquire.py
 
 # Or force complete re-download:
-python acquire_data.py --force
+python scripts/01_acquire.py --force
 ```
 
 ---
@@ -442,7 +442,7 @@ chmod -R 755 data/
 **Solution:**
 ```bash
 # Force fresh download
-python acquire_data.py --force
+python scripts/01_acquire.py --force
 ```
 
 ---
@@ -454,7 +454,7 @@ If you encounter issues not covered here:
 1. Check the log file: `data_acquisition.log`
 2. Run with verbose logging:
    ```bash
-   python acquire_data.py 2>&1 | tee acquisition_output.txt
+   python scripts/01_acquire.py 2>&1 | tee acquisition_output.txt
    ```
 3. Review Kaggle API docs: https://github.com/Kaggle/kaggle-api
 4. Check GitHub repository issues: https://github.com/datasets/football-datasets/issues
@@ -527,7 +527,7 @@ After successful data acquisition:
 
 1. **Verify data:**
    ```bash
-   python acquire_data.py --verify-only
+   python scripts/01_acquire.py --verify-only
    ```
 
 2. **Run data cleaning:**
@@ -602,10 +602,10 @@ cd data/raw/Dataset 2/football-datasets
 git pull
 
 # Re-download Kaggle dataset (Dataset 1)
-python acquire_data.py --force
+python scripts/01_acquire.py --force
 
 # Verify new checksums
-python acquire_data.py --verify-only
+python scripts/01_acquire.py --verify-only
 ```
 
 ---

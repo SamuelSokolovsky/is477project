@@ -408,7 +408,7 @@ chmod 600 ~/.kaggle/kaggle.json
 This project uses **fully automated data acquisition** for complete reproducibility:
 
 ```bash
-python acquire_data.py
+python scripts/01_acquire.py
 ```
 
 This will:
@@ -421,7 +421,7 @@ This will:
 
 **Verify data integrity:**
 ```bash
-python acquire_data.py --verify-only
+python scripts/01_acquire.py --verify-only
 ```
 
 **5. Run the complete pipeline**

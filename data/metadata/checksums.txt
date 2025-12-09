@@ -1,8 +1,8 @@
-# SHA-256 Checksums
-# Generated: 2025-12-09 16:36:13
-# Total files: 4
-#
-634b332ccfa4cd36215072c878ff5c337b6ffefa7ef9629dbf21dc4cb06c6ac0  data\raw\Dataset 1\teams.csv
-2ec55d6d28271b073bf13236d33c52b1835be3e8bd3e9d2bc2636e320926597b  data\raw\Dataset 1\teamStats.csv
-4c4614b647e70a6c8c9652acb5a8f3ec8e794d691b0614c101680ed88a4dae1f  data\raw\Dataset 1\standings.csv
+# SHA-256 Checksums for Soccer Analytics Dataset
+# Generated: 2025-12-09 16:53:36
+#======================================================================
+
 7677d3fe20eebe56780f7b2abbafc0e72b071da722675756ac8189f4647f7783  data\raw\Dataset 1\leagues.csv
+4c4614b647e70a6c8c9652acb5a8f3ec8e794d691b0614c101680ed88a4dae1f  data\raw\Dataset 1\standings.csv
+2ec55d6d28271b073bf13236d33c52b1835be3e8bd3e9d2bc2636e320926597b  data\raw\Dataset 1\teamStats.csv
+634b332ccfa4cd36215072c878ff5c337b6ffefa7ef9629dbf21dc4cb06c6ac0  data\raw\Dataset 1\teams.csv
