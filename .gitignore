@@ -1,7 +1,5 @@
 # Data files (raw data should NOT be in version control)
-data/raw/
-data/Dataset 1/
-data/Dataset 2/
+data/raw/Dataset 2
 data/processed/*.csv
 *.xlsx
 *.zip

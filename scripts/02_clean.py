@@ -353,20 +353,56 @@ def main():
     processed_dir.mkdir(parents=True, exist_ok=True)
     reports_dir.mkdir(parents=True, exist_ok=True)
 
-    # 1. Load Dataset 2 (match results)
+    # 1. Load Dataset 2 (match results) from individual season files
     print("\n" + "=" * 60)
     print("LOADING DATASETS")
     print("=" * 60)
 
-    df2_path = raw_dir / "Dataset 2" / "football-datasets" / "datasets" / "all_leagues_all_seasons.csv"
-    print(f"Loading: {df2_path}")
-    df2_raw = pd.read_csv(df2_path)
+    dataset2_dir = raw_dir / "Dataset 2" / "football-datasets" / "datasets"
+    leagues = ['premier-league', 'la-liga', 'serie-a', 'bundesliga', 'ligue-1']
 
-    # 2. Load Dataset 1 files
-    df1_teams_raw = pd.read_csv(raw_dir / "Dataset 1" / "teams.csv")
-    df1_teamstats_raw = pd.read_csv(raw_dir / "Dataset 1" / "teamStats.csv")
-    df1_standings_raw = pd.read_csv(raw_dir / "Dataset 1" / "standings.csv")
-    df1_leagues_raw = pd.read_csv(raw_dir / "Dataset 1" / "leagues.csv")
+    print("Loading Dataset 2 from individual season files...")
+    df2_parts = []
+    for league in leagues:
+        league_dir = dataset2_dir / league
+        if league_dir.exists():
+            season_files = sorted(league_dir.glob("season-*.csv"))
+            print(f"  Loading {league}: {len(season_files)} season files")
+            for season_file in season_files:
+                try:
+                    df = pd.read_csv(season_file)
+                    df['league_name'] = league
+                    df2_parts.append(df)
+                except Exception as e:
+                    print(f"    [WARNING] Failed to load {season_file.name}: {e}")
+
+    if df2_parts:
+        df2_raw = pd.concat(df2_parts, ignore_index=True)
+        print(f"  Total matches loaded: {len(df2_raw):,}")
+    else:
+        print("  [ERROR] No Dataset 2 files found!")
+        return False
+
+    # 2. Load Dataset 1 files (optional - skip if not available)
+    dataset1_dir = raw_dir / "Dataset 1"
+    dataset1_available = (dataset1_dir / "teams.csv").exists()
+
+    if dataset1_available:
+        print("\nLoading Dataset 1 (Local)...")
+        df1_teams_raw = pd.read_csv(dataset1_dir / "teams.csv")
+        df1_teamstats_raw = pd.read_csv(dataset1_dir / "teamStats.csv")
+        df1_standings_raw = pd.read_csv(dataset1_dir / "standings.csv")
+        df1_leagues_raw = pd.read_csv(dataset1_dir / "leagues.csv")
+        print("  Dataset 1 loaded successfully")
+    else:
+        print("\n[INFO] Dataset 1 (Local) not available - skipping")
+        print("  To enable Dataset 1:")
+        print("  1. Ensure Dataset 1 files are in data/raw/Dataset 1/")
+        print("  2. Or run: python acquire_data.py to verify checksums")
+        df1_teams_raw = None
+        df1_teamstats_raw = None
+        df1_standings_raw = None
+        df1_leagues_raw = None
 
     # 3. Clean datasets
     print("\n" + "=" * 60)
@@ -374,10 +410,17 @@ def main():
     print("=" * 60)
 
     df2_clean = clean_dataset2(df2_raw)
-    df1_teams_clean = clean_dataset1_teams(df1_teams_raw)
-    df1_teamstats_clean = clean_dataset1_teamstats(df1_teamstats_raw)
-    df1_standings_clean = clean_dataset1_standings(df1_standings_raw)
-    df1_leagues_clean = clean_dataset1_leagues(df1_leagues_raw)
+
+    if dataset1_available:
+        df1_teams_clean = clean_dataset1_teams(df1_teams_raw)
+        df1_teamstats_clean = clean_dataset1_teamstats(df1_teamstats_raw)
+        df1_standings_clean = clean_dataset1_standings(df1_standings_raw)
+        df1_leagues_clean = clean_dataset1_leagues(df1_leagues_raw)
+    else:
+        df1_teams_clean = None
+        df1_teamstats_clean = None
+        df1_standings_clean = None
+        df1_leagues_clean = None
 
     # 4. Create team name mappings
     unique_teams = pd.concat([
@@ -385,7 +428,7 @@ def main():
         df2_clean['AwayTeam_std']
     ]).unique()
 
-    team_mapping = create_team_mapping(unique_teams, df1_teams_clean)
+    team_mapping = create_team_mapping(unique_teams, df1_teams_clean if dataset1_available else pd.DataFrame())
 
     # 5. Save cleaned datasets
     print("\n" + "=" * 60)
@@ -395,17 +438,20 @@ def main():
     df2_clean.to_csv(processed_dir / "dataset2_clean.csv", index=False)
     print(f"  [OK] Saved: dataset2_clean.csv")
 
-    df1_teams_clean.to_csv(processed_dir / "dataset1_teams_clean.csv", index=False)
-    print(f"  [OK] Saved: dataset1_teams_clean.csv")
+    if dataset1_available:
+        df1_teams_clean.to_csv(processed_dir / "dataset1_teams_clean.csv", index=False)
+        print(f"  [OK] Saved: dataset1_teams_clean.csv")
 
-    df1_teamstats_clean.to_csv(processed_dir / "dataset1_teamstats_clean.csv", index=False)
-    print(f"  [OK] Saved: dataset1_teamstats_clean.csv")
+        df1_teamstats_clean.to_csv(processed_dir / "dataset1_teamstats_clean.csv", index=False)
+        print(f"  [OK] Saved: dataset1_teamstats_clean.csv")
 
-    df1_standings_clean.to_csv(processed_dir / "dataset1_standings_clean.csv", index=False)
-    print(f"  [OK] Saved: dataset1_standings_clean.csv")
+        df1_standings_clean.to_csv(processed_dir / "dataset1_standings_clean.csv", index=False)
+        print(f"  [OK] Saved: dataset1_standings_clean.csv")
 
-    df1_leagues_clean.to_csv(processed_dir / "dataset1_leagues_clean.csv", index=False)
-    print(f"  [OK] Saved: dataset1_leagues_clean.csv")
+        df1_leagues_clean.to_csv(processed_dir / "dataset1_leagues_clean.csv", index=False)
+        print(f"  [OK] Saved: dataset1_leagues_clean.csv")
+    else:
+        print(f"  [SKIPPED] Dataset 1 files (not available)")
 
     team_mapping.to_csv(metadata_dir / "team_name_mappings.csv", index=False)
     print(f"  [OK] Saved: team_name_mappings.csv")
@@ -420,10 +466,11 @@ def main():
         'dataset2_date_range': f"{df2_clean['Date'].min().strftime('%Y-%m-%d')} to {df2_clean['Date'].max().strftime('%Y-%m-%d')}",
         'dataset2_teams': df2_clean['HomeTeam_std'].nunique(),
         'dataset2_leagues': sorted(df2_clean['league_name'].unique()),
-        'dataset1_teams': len(df1_teams_clean),
-        'dataset1_teamstats': len(df1_teamstats_clean),
-        'dataset1_standings': len(df1_standings_clean),
-        'dataset1_leagues': len(df1_leagues_clean)
+        'dataset1_teams': len(df1_teams_clean) if dataset1_available else 0,
+        'dataset1_teamstats': len(df1_teamstats_clean) if dataset1_available else 0,
+        'dataset1_standings': len(df1_standings_clean) if dataset1_available else 0,
+        'dataset1_leagues': len(df1_leagues_clean) if dataset1_available else 0,
+        'dataset1_available': dataset1_available
     }
 
     generate_cleaning_report(stats, reports_dir)
@@ -433,12 +480,15 @@ def main():
     print("=" * 60)
     print(f"\nCleaned files saved to: {processed_dir}/")
     print("  - dataset2_clean.csv")
-    print("  - dataset1_teams_clean.csv")
-    print("  - dataset1_teamstats_clean.csv")
-    print("  - dataset1_standings_clean.csv")
-    print("  - dataset1_leagues_clean.csv")
+    if dataset1_available:
+        print("  - dataset1_teams_clean.csv")
+        print("  - dataset1_teamstats_clean.csv")
+        print("  - dataset1_standings_clean.csv")
+        print("  - dataset1_leagues_clean.csv")
     print(f"\nMetadata saved to: {metadata_dir}/")
     print("  - team_name_mappings.csv")
+    if not dataset1_available:
+        print("\n[NOTE] Dataset 1 (Local) was not available and was skipped")
     print("\n")
 
     return True

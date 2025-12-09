@@ -21,34 +21,23 @@ cd is477project-main
 pip install -r requirements.txt
 ```
 
-### Step 3: Set Up Kaggle API (One-Time Setup)
-
-1. Go to: https://www.kaggle.com/settings
-2. Click "Create New API Token"
-3. Save `kaggle.json` to:
-   - **Linux/Mac:** `~/.kaggle/kaggle.json`
-   - **Windows:** `C:\Users\<USERNAME>\.kaggle\kaggle.json`
-
-```bash
-# On Linux/Mac, set permissions:
-chmod 600 ~/.kaggle/kaggle.json
-```
-
-### Step 4: Acquire Data Programmatically
+### Step 3: Acquire Data Programmatically
 
 ```bash
 python acquire_data.py
 ```
 
 **What happens:**
-- ✅ Downloads ESPN Soccer Data from Kaggle (~12 MB)
-- ✅ Clones European Football Statistics from GitHub (~5 MB)
+- ✅ Verifies Dataset 1 (ESPN Soccer Data) - stored locally (~12 MB)
+- ✅ Clones Dataset 2 (European Football Statistics) from GitHub (~5 MB)
 - ✅ Calculates SHA-256 checksums for all files
 - ✅ Generates acquisition metadata and reports
 
-**Expected Runtime:** 3-5 minutes (depending on internet speed)
+**Expected Runtime:** 2-3 minutes (depending on internet speed)
 
-### Step 5: Verify Data Integrity
+**Note:** Dataset 1 is included in the repository - no Kaggle API credentials needed!
+
+### Step 4: Verify Data Integrity
 
 ```bash
 python acquire_data.py --verify-only
@@ -59,7 +48,7 @@ Expected output:
 [OK] All checksums verified successfully!
 ```
 
-### Step 6: Run Complete Analysis Pipeline
+### Step 5: Run Complete Analysis Pipeline
 
 ```bash
 # Option A: Run all scripts sequentially
@@ -79,7 +68,7 @@ python scripts/06_visualize.py
 
 **Expected Total Runtime:** ~8-10 minutes
 
-### Step 7: View Results
+### Step 6: View Results
 
 ```bash
 # Reports
@@ -96,9 +85,9 @@ ls outputs/models/
 
 ## Troubleshooting
 
-**Problem:** Kaggle credentials not found
+**Problem:** Dataset 1 files missing
 
-**Solution:** Follow [Step 3](#step-3-set-up-kaggle-api-one-time-setup) carefully. See `DATA_ACQUISITION.md` for detailed instructions.
+**Solution:** Ensure you cloned the entire repository including `data/raw/Dataset 1/` directory. If missing, contact the repository maintainer.
 
 ---
 

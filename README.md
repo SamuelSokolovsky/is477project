@@ -67,13 +67,15 @@ Our analysis reveals:
 - 2000-2004: Added card statistics
 - 2005-present: Full statistics including shots, corners, fouls (66% of dataset)
 
-### Dataset 2: ESPN Soccer Data (Supporting)
+### Dataset 2: ESPN Soccer Data (Supporting - Local)
 
 - **Source:** [Kaggle - ESPN Soccer Data](https://www.kaggle.com/datasets/excel4soccer/espn-soccer-data)
+- **Storage:** Stored locally in repository at `data/raw/Dataset 1/`
 - **Files Used:** teams.csv (503 KB), teamStats.csv (11.24 MB), standings.csv (638 KB), leagues.csv (138 KB)
 - **Purpose:** Team name standardization and league metadata
 - **Total Size:** 12.5 MB across 4 files
 - **License:** Community Data License Agreement (CDLA)
+- **Note:** No Kaggle API credentials needed - files are included in the repository
 
 ### Data Structure
 
@@ -371,10 +373,25 @@ Required packages:
 - kagglehub>=0.2.0 (for data acquisition)
 - requests>=2.31.0 (for data acquisition)
 
-**3. Set up Kaggle API credentials (one-time setup)**
+**3. Set up Kaggle API credentials (one-time setup - OPTIONAL)**
 
-Follow the detailed instructions in [DATA_ACQUISITION.md](DATA_ACQUISITION.md#kaggle-api-setup), or quick steps:
+> **Note:** Kaggle credentials are optional. If not provided, the project will automatically skip Dataset 1 and use only Dataset 2 (GitHub data). The pipeline will still work with 57,000+ matches!
 
+For detailed instructions, see [KAGGLE_SETUP.md](KAGGLE_SETUP.md). Quick setup:
+
+**Option 1: Environment Variables (Recommended)**
+```bash
+# 1. Copy .env.example to .env
+cp .env.example .env
+
+# 2. Edit .env and add your credentials:
+# KAGGLE_USERNAME=your_username
+# KAGGLE_KEY=your_api_key
+
+# 3. Get credentials from: https://www.kaggle.com/settings
+```
+
+**Option 2: kaggle.json File**
 ```bash
 # 1. Go to https://www.kaggle.com/settings
 # 2. Click "Create New API Token"

@@ -355,8 +355,14 @@ def main():
     print(f"  Loaded: {len(df_matches):,} matches")
 
     print("\nLoading Dataset 1 (teams)...")
-    df_teams = pd.read_csv(processed_dir / "dataset1_teams_clean.csv")
-    print(f"  Loaded: {len(df_teams):,} teams")
+    dataset1_teams_file = processed_dir / "dataset1_teams_clean.csv"
+    if dataset1_teams_file.exists():
+        df_teams = pd.read_csv(dataset1_teams_file)
+        print(f"  Loaded: {len(df_teams):,} teams")
+    else:
+        print("  [INFO] Dataset 1 not available - creating empty teams DataFrame")
+        df_teams = pd.DataFrame()
+        print("  Note: Integration will proceed with Dataset 2 only")
 
     # 2. Create integrated dataset
     print("\n" + "=" * 60)

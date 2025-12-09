@@ -7,22 +7,24 @@ This script automates the download and verification of all datasets required
 for the project, ensuring reproducibility and data integrity.
 
 Datasets:
-1. ESPN Soccer Data (Kaggle) - Match fixtures and team statistics
+1. ESPN Soccer Data (Local) - Match fixtures and team statistics
+   - Stored locally in repository at data/raw/Dataset 1/
+   - No download needed
 2. European Football Match Statistics (GitHub) - Historical match data
+   - Downloaded from GitHub repository
 
 Requirements:
-- Kaggle API credentials configured (~/.kaggle/kaggle.json)
-- Internet connection
+- Internet connection (for Dataset 2)
 - Git installed (for Dataset 2)
 
 Usage:
-    python acquire_data.py [--force] [--skip-kaggle] [--skip-github]
+    python acquire_data.py [--force] [--skip-dataset1] [--skip-github]
 
 Options:
-    --force         Re-download even if data exists
-    --skip-kaggle   Skip Kaggle dataset download
-    --skip-github   Skip GitHub dataset download
-    --verify-only   Only verify checksums, don't download
+    --force          Re-download even if data exists (Dataset 2 only)
+    --skip-dataset1  Skip Dataset 1 verification
+    --skip-github    Skip GitHub dataset download
+    --verify-only    Only verify checksums, don't download
 
 Author: IS477 Student
 Date: December 2025
@@ -39,6 +41,14 @@ from pathlib import Path
 from datetime import datetime
 from typing import Dict, List, Tuple
 import logging
+
+# Try to load environment variables from .env file
+try:
+    from dotenv import load_dotenv
+    load_dotenv()  # Load .env file if it exists
+except ImportError:
+    # python-dotenv not installed, will rely on system environment variables
+    pass
 
 # Configure logging
 logging.basicConfig(
@@ -134,101 +144,181 @@ class SoccerDataAcquisition:
 
         logger.info(f"Checksums JSON saved to: {checksum_json}")
 
-    def _check_kaggle_credentials(self) -> bool:
+    # COMMENTED OUT: No longer using Kaggle API - Dataset 1 is stored locally
+    # def _check_kaggle_credentials(self) -> bool:
+    #     """
+    #     Check if Kaggle API credentials are configured.
+    #
+    #     Checks multiple sources in order:
+    #     1. Environment variables (KAGGLE_USERNAME, KAGGLE_KEY)
+    #     2. kaggle.json file at ~/.kaggle/kaggle.json
+    #
+    #     Returns:
+    #         True if credentials exist, False otherwise
+    #     """
+    #     # Check environment variables first
+    #     has_env_vars = bool(os.getenv('KAGGLE_USERNAME') and os.getenv('KAGGLE_KEY'))
+    #
+    #     # Check for kaggle.json file
+    #     kaggle_json = Path.home() / '.kaggle' / 'kaggle.json'
+    #     has_json_file = kaggle_json.exists()
+    #
+    #     if has_env_vars:
+    #         logger.info("Kaggle API credentials found (environment variables)")
+    #         return True
+    #     elif has_json_file:
+    #         logger.info(f"Kaggle API credentials found ({kaggle_json})")
+    #         return True
+    #     else:
+    #         logger.warning("=" * 70)
+    #         logger.warning("Kaggle API credentials not found!")
+    #         logger.warning("=" * 70)
+    #         logger.warning("")
+    #         logger.warning("Dataset 1 requires Kaggle authentication.")
+    #         logger.warning("You have 3 options to provide credentials:")
+    #         logger.warning("")
+    #         logger.warning("Option 1 (Recommended): Environment Variables")
+    #         logger.warning("  1. Copy .env.example to .env")
+    #         logger.warning("  2. Edit .env with your credentials")
+    #         logger.warning("  3. Get credentials from: https://www.kaggle.com/settings")
+    #         logger.warning("")
+    #         logger.warning("Option 2: kaggle.json File")
+    #         logger.warning(f"  Place kaggle.json at: {kaggle_json}")
+    #         logger.warning("  Get it from: https://www.kaggle.com/settings")
+    #         logger.warning("")
+    #         logger.warning("Option 3: Set Environment Variables")
+    #         logger.warning("  export KAGGLE_USERNAME=your_username")
+    #         logger.warning("  export KAGGLE_KEY=your_api_key")
+    #         logger.warning("")
+    #         logger.warning("See KAGGLE_SETUP.md for detailed instructions")
+    #         logger.warning("=" * 70)
+    #         logger.warning("")
+    #         logger.warning("Skipping Kaggle dataset acquisition...")
+    #         return False
+
+    # COMMENTED OUT: No longer using Kaggle API - Dataset 1 is stored locally
+    # def acquire_dataset1_kaggle(self):
+    #     """
+    #     Download Dataset 1 from Kaggle using kagglehub.
+    #
+    #     Dataset: ESPN Soccer Data
+    #     Source: https://www.kaggle.com/datasets/excel4soccer/espn-soccer-data
+    #     """
+    #     logger.info("="*70)
+    #     logger.info("ACQUIRING DATASET 1: ESPN Soccer Data (Kaggle)")
+    #     logger.info("="*70)
+    #
+    #     # Check credentials
+    #     if not self._check_kaggle_credentials():
+    #         logger.warning("Dataset 1 will be skipped due to missing credentials")
+    #         return
+    #
+    #     # Check if data already exists
+    #     expected_files = ['teams.csv', 'teamStats.csv', 'standings.csv', 'leagues.csv']
+    #     all_exist = all((self.dataset1_dir / f).exists() for f in expected_files)
+    #
+    #     if all_exist and not self.force_download:
+    #         logger.info("Dataset 1 files already exist. Use --force to re-download")
+    #         logger.info("Calculating checksums for existing files...")
+    #         for filename in expected_files:
+    #             filepath = self.dataset1_dir / filename
+    #             checksum = self._calculate_checksum(filepath)
+    #             relative_path = filepath.relative_to(self.base_dir)
+    #             self.checksums[str(relative_path)] = checksum
+    #             logger.info(f"  {filename}: {checksum[:16]}...")
+    #         return
+    #
+    #     # Download using kagglehub with correct API
+    #     try:
+    #         import kagglehub
+    #
+    #         logger.info("Downloading from Kaggle (this may take a few minutes)...")
+    #         logger.info("Dataset: excel4soccer/espn-soccer-data")
+    #
+    #         # Download entire dataset to kagglehub cache
+    #         download_path = kagglehub.dataset_download("excel4soccer/espn-soccer-data")
+    #         logger.info(f"Dataset downloaded to cache: {download_path}")
+    #
+    #         # Copy the files we need to our project directory
+    #         # Files are in the base_data subdirectory
+    #         source_dir = Path(download_path) / "base_data"
+    #
+    #         logger.info("Copying files to project directory...")
+    #         for filename in expected_files:
+    #             source_file = source_dir / filename
+    #             dest_file = self.dataset1_dir / filename
+    #
+    #             if source_file.exists():
+    #                 # Copy the file
+    #                 shutil.copy2(source_file, dest_file)
+    #
+    #                 # Calculate checksum
+    #                 checksum = self._calculate_checksum(dest_file)
+    #                 relative_path = dest_file.relative_to(self.base_dir)
+    #                 self.checksums[str(relative_path)] = checksum
+    #
+    #                 # Get file size
+    #                 size_mb = dest_file.stat().st_size / (1024 * 1024)
+    #
+    #                 logger.info(f"  [OK] {filename} ({size_mb:.2f} MB)")
+    #                 logger.info(f"       SHA-256: {checksum[:16]}...")
+    #             else:
+    #                 logger.warning(f"  [WARN] {filename} not found in downloaded dataset")
+    #
+    #         logger.info("Dataset 1 acquisition complete!")
+    #         logger.info(f"Files saved to: {self.dataset1_dir}")
+    #
+    #     except ImportError:
+    #         raise DataAcquisitionError(
+    #             "kagglehub not installed. Run: pip install kagglehub"
+    #         )
+    #     except Exception as e:
+    #         raise DataAcquisitionError(f"Failed to download Kaggle dataset: {e}")
+
+    def verify_dataset1_local(self):
         """
-        Check if Kaggle API credentials are configured.
+        Verify Dataset 1 files exist locally and calculate checksums.
 
-        Returns:
-            True if credentials exist, False otherwise
-        """
-        kaggle_json = Path.home() / '.kaggle' / 'kaggle.json'
-
-        if not kaggle_json.exists():
-            logger.error("Kaggle API credentials not found!")
-            logger.error(f"Expected location: {kaggle_json}")
-            logger.error("Please follow these steps:")
-            logger.error("1. Go to https://www.kaggle.com/settings")
-            logger.error("2. Click 'Create New API Token'")
-            logger.error("3. Place kaggle.json in ~/.kaggle/ directory")
-            logger.error("4. Run: chmod 600 ~/.kaggle/kaggle.json (on Unix)")
-            return False
-
-        logger.info("Kaggle API credentials found")
-        return True
-
-    def acquire_dataset1_kaggle(self):
-        """
-        Download Dataset 1 from Kaggle using kagglehub.
-
+        Dataset 1 is now stored in the repository - no download needed.
         Dataset: ESPN Soccer Data
         Source: https://www.kaggle.com/datasets/excel4soccer/espn-soccer-data
         """
         logger.info("="*70)
-        logger.info("ACQUIRING DATASET 1: ESPN Soccer Data (Kaggle)")
+        logger.info("VERIFYING DATASET 1: ESPN Soccer Data (Local)")
         logger.info("="*70)
 
-        # Check credentials
-        if not self._check_kaggle_credentials():
-            raise DataAcquisitionError("Kaggle credentials not configured")
-
-        # Check if data already exists
         expected_files = ['teams.csv', 'teamStats.csv', 'standings.csv', 'leagues.csv']
-        all_exist = all((self.dataset1_dir / f).exists() for f in expected_files)
 
-        if all_exist and not self.force_download:
-            logger.info("Dataset 1 files already exist. Use --force to re-download")
-            logger.info("Calculating checksums for existing files...")
-            for filename in expected_files:
-                filepath = self.dataset1_dir / filename
+        if not self.dataset1_dir.exists():
+            logger.warning(f"Dataset 1 directory not found: {self.dataset1_dir}")
+            logger.warning("Please ensure Dataset 1 files are stored in data/raw/Dataset 1/")
+            return
+
+        logger.info(f"Checking for Dataset 1 files in: {self.dataset1_dir}")
+
+        found_files = []
+        for filename in expected_files:
+            filepath = self.dataset1_dir / filename
+            if filepath.exists():
+                # Calculate checksum
                 checksum = self._calculate_checksum(filepath)
                 relative_path = filepath.relative_to(self.base_dir)
                 self.checksums[str(relative_path)] = checksum
-                logger.info(f"  {filename}: {checksum[:16]}...")
-            return
 
-        # Download using kagglehub
-        try:
-            import kagglehub
+                # Get file size
+                size_mb = filepath.stat().st_size / (1024 * 1024)
 
-            logger.info("Downloading from Kaggle (this may take a few minutes)...")
-            logger.info("Dataset: excel4soccer/espn-soccer-data")
+                logger.info(f"  [OK] {filename} ({size_mb:.2f} MB)")
+                logger.info(f"       SHA-256: {checksum[:16]}...")
+                found_files.append(filename)
+            else:
+                logger.warning(f"  [MISSING] {filename}")
 
-            # Download dataset
-            download_path = kagglehub.dataset_download("excel4soccer/espn-soccer-data")
-
-            logger.info(f"Dataset downloaded to: {download_path}")
-
-            # Copy files to our directory structure
-            source_dir = Path(download_path)
-
-            for filename in expected_files:
-                source_file = source_dir / filename
-                dest_file = self.dataset1_dir / filename
-
-                if source_file.exists():
-                    shutil.copy2(source_file, dest_file)
-
-                    # Calculate checksum
-                    checksum = self._calculate_checksum(dest_file)
-                    relative_path = dest_file.relative_to(self.base_dir)
-                    self.checksums[str(relative_path)] = checksum
-
-                    # Get file size
-                    size_mb = dest_file.stat().st_size / (1024 * 1024)
-
-                    logger.info(f"  [OK] {filename} ({size_mb:.2f} MB)")
-                    logger.info(f"       SHA-256: {checksum[:16]}...")
-                else:
-                    logger.warning(f"  [WARN] {filename} not found in download")
-
-            logger.info("Dataset 1 acquisition complete!")
-
-        except ImportError:
-            raise DataAcquisitionError(
-                "kagglehub not installed. Run: pip install kagglehub"
-            )
-        except Exception as e:
-            raise DataAcquisitionError(f"Failed to download Kaggle dataset: {e}")
+        if len(found_files) == len(expected_files):
+            logger.info("All Dataset 1 files found and verified!")
+        else:
+            logger.warning(f"Found {len(found_files)}/{len(expected_files)} expected files")
+            logger.warning("Some Dataset 1 files are missing!")
 
     def acquire_dataset2_github(self):
         """
@@ -293,38 +383,37 @@ class SoccerDataAcquisition:
 
         logger.info("Calculating checksums for league data files...")
 
-        # Key file to process: all_leagues_all_seasons.csv
-        all_leagues_file = datasets_dir / "all_leagues_all_seasons.csv"
-
-        if all_leagues_file.exists():
-            checksum = self._calculate_checksum(all_leagues_file)
-            relative_path = all_leagues_file.relative_to(self.base_dir)
-            self.checksums[str(relative_path)] = checksum
-
-            size_mb = all_leagues_file.stat().st_size / (1024 * 1024)
-            logger.info(f"  [OK] all_leagues_all_seasons.csv ({size_mb:.2f} MB)")
-            logger.info(f"       SHA-256: {checksum[:16]}...")
-        else:
-            logger.warning("  [WARN] all_leagues_all_seasons.csv not found")
-
-        # Also checksum individual league directories
+        # Process individual league directories
         leagues = [
-            'english-premier-league',
-            'spanish-la-liga',
-            'italian-serie-a',
-            'german-bundesliga',
-            'french-ligue-1'
+            'premier-league',
+            'la-liga',
+            'serie-a',
+            'bundesliga',
+            'ligue-1'
         ]
 
+        total_files = 0
         for league in leagues:
             league_dir = datasets_dir / league
             if league_dir.exists():
-                csv_files = list(league_dir.glob('*.csv'))
-                logger.info(f"  Found {len(csv_files)} files in {league}")
+                csv_files = list(league_dir.glob('season-*.csv'))
+                logger.info(f"  Found {len(csv_files)} season files in {league}")
+                total_files += len(csv_files)
+
+                # Calculate checksums for a sample of files (not all to save time)
+                if csv_files:
+                    # Checksum the first file as a sample
+                    sample_file = csv_files[0]
+                    checksum = self._calculate_checksum(sample_file)
+                    relative_path = sample_file.relative_to(self.base_dir)
+                    self.checksums[str(relative_path)] = checksum
+
+                    size_mb = sample_file.stat().st_size / (1024 * 1024)
+                    logger.info(f"    Sample: {sample_file.name} ({size_mb:.2f} MB)")
             else:
                 logger.warning(f"  [WARN] {league} directory not found")
 
-        logger.info("Dataset 2 acquisition complete!")
+        logger.info(f"Dataset 2 acquisition complete! Total season files: {total_files}")
 
     def verify_checksums(self, checksum_file: Path = None):
         """
@@ -441,12 +530,12 @@ class SoccerDataAcquisition:
 
         logger.info(f"Acquisition report saved to: {report_file}")
 
-    def run_acquisition(self, skip_kaggle: bool = False, skip_github: bool = False):
+    def run_acquisition(self, skip_dataset1: bool = False, skip_github: bool = False):
         """
         Run complete data acquisition workflow.
 
         Args:
-            skip_kaggle: Skip Kaggle dataset acquisition
+            skip_dataset1: Skip Dataset 1 verification (local files)
             skip_github: Skip GitHub dataset acquisition
         """
         logger.info("="*70)
@@ -457,12 +546,12 @@ class SoccerDataAcquisition:
         logger.info("")
 
         try:
-            # Acquire Dataset 1 (Kaggle)
-            if not skip_kaggle:
-                self.acquire_dataset1_kaggle()
+            # Verify Dataset 1 (Local - no longer downloaded from Kaggle)
+            if not skip_dataset1:
+                self.verify_dataset1_local()
                 logger.info("")
             else:
-                logger.info("Skipping Kaggle dataset acquisition (--skip-kaggle)")
+                logger.info("Skipping Dataset 1 verification (--skip-dataset1)")
                 logger.info("")
 
             # Acquire Dataset 2 (GitHub)
@@ -513,10 +602,12 @@ def main():
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
-  python acquire_data.py                    # Download all datasets
-  python acquire_data.py --force            # Force re-download
-  python acquire_data.py --skip-kaggle      # Skip Kaggle dataset
+  python acquire_data.py                    # Verify Dataset 1 and download Dataset 2
+  python acquire_data.py --force            # Force re-download Dataset 2
+  python acquire_data.py --skip-dataset1    # Skip Dataset 1 verification
   python acquire_data.py --verify-only      # Only verify checksums
+
+Note: Dataset 1 is stored locally in the repository (no download needed)
 
 For more information, see DATA_ACQUISITION.md
         """
@@ -525,13 +616,13 @@ For more information, see DATA_ACQUISITION.md
     parser.add_argument(
         '--force',
         action='store_true',
-        help='Force re-download even if data exists'
+        help='Force re-download even if data exists (applies to Dataset 2 only)'
     )
 
     parser.add_argument(
-        '--skip-kaggle',
+        '--skip-dataset1',
         action='store_true',
-        help='Skip Kaggle dataset acquisition'
+        help='Skip Dataset 1 verification (local files)'
     )
 
     parser.add_argument(
@@ -558,7 +649,7 @@ For more information, see DATA_ACQUISITION.md
         else:
             # Run full acquisition
             acquirer.run_acquisition(
-                skip_kaggle=args.skip_kaggle,
+                skip_dataset1=args.skip_dataset1,
                 skip_github=args.skip_github
             )
 

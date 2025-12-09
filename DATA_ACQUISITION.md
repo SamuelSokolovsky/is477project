@@ -48,9 +48,11 @@ pip install -r requirements.txt
 ```
 
 Key packages for data acquisition:
-- `kagglehub` - Kaggle dataset downloads
-- `requests` - HTTP requests
+- `pandas` - Data processing
+- `requests` - HTTP requests (optional)
 - `GitPython` - Git operations (optional)
+
+**Note:** `kagglehub` is no longer required as Dataset 1 is stored locally
 
 ---
 
@@ -58,45 +60,35 @@ Key packages for data acquisition:
 
 **For first-time users**, follow these steps:
 
-### Step 1: Set up Kaggle API credentials
-
-```bash
-# 1. Go to https://www.kaggle.com/settings
-# 2. Scroll to "API" section
-# 3. Click "Create New API Token"
-# 4. Save kaggle.json to:
-#    - Linux/Mac: ~/.kaggle/kaggle.json
-#    - Windows: C:\Users\<USERNAME>\.kaggle\kaggle.json
-
-# On Linux/Mac, set permissions:
-chmod 600 ~/.kaggle/kaggle.json
-```
-
-### Step 2: Run the acquisition script
+### Step 1: Run the acquisition script
 
 ```bash
 python acquire_data.py
 ```
 
 That's it! The script will:
-- ✅ Download ESPN Soccer Data from Kaggle
-- ✅ Clone European Football Statistics from GitHub
+- ✅ Verify Dataset 1 (ESPN Soccer Data) - stored locally in repository
+- ✅ Clone Dataset 2 (European Football Statistics) from GitHub
 - ✅ Calculate SHA-256 checksums for all files
 - ✅ Generate acquisition metadata and reports
 
-**Expected Runtime:** 3-5 minutes (depending on internet speed)
+**Expected Runtime:** 2-3 minutes (depending on internet speed)
+
+**Note:** Dataset 1 is now included in the repository - no Kaggle API credentials needed!
 
 ---
 
 ## Dataset Overview
 
-### Dataset 1: ESPN Soccer Data (Kaggle)
+### Dataset 1: ESPN Soccer Data (Local)
 
 **Source:** https://www.kaggle.com/datasets/excel4soccer/espn-soccer-data
 
+**Storage:** Stored locally in repository at `data/raw/Dataset 1/`
+
 **Description:** Comprehensive soccer statistics from ESPN including match fixtures, team statistics, standings, and team information.
 
-**Files Downloaded:**
+**Files Included:**
 - `teams.csv` (~500 KB) - Team information
 - `teamStats.csv` (~11 MB) - Detailed team statistics
 - `standings.csv` (~600 KB) - League standings
@@ -104,7 +96,7 @@ That's it! The script will:
 
 **License:** Community Data License Agreement - Permissive
 
-**Method:** Kaggle API via `kagglehub` library
+**Method:** No download needed - files are included in the repository
 
 ---
 
@@ -137,7 +129,14 @@ That's it! The script will:
 
 ---
 
-## Kaggle API Setup
+## ~~Kaggle API Setup~~ (No Longer Required)
+
+> **UPDATE:** Dataset 1 is now stored locally in the repository. Kaggle API credentials are no longer needed!
+>
+> This section is kept for reference only.
+
+<details>
+<summary>Click to view deprecated Kaggle setup instructions (not needed)</summary>
 
 ### Detailed Setup Instructions
 
@@ -188,6 +187,8 @@ Expected output:
 ```
 Kaggle config: /Users/yourname/.kaggle/kaggle.json exists: True
 ```
+
+</details>
 
 ---
 

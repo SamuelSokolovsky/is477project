@@ -3,8 +3,9 @@ Data Acquisition Script
 =======================
 Purpose: Verify and document both soccer datasets
 
-Dataset 1 - ESPN Soccer Data (Kaggle):
+Dataset 1 - ESPN Soccer Data (Local):
 - Source: https://www.kaggle.com/datasets/excel4soccer/espn-soccer-data
+- Storage: Stored locally in repository at data/raw/Dataset 1/
 - Files: fixtures.csv, teamStats.csv, standings.csv, teams.csv
 
 Dataset 2 - Football-Data.co.uk:
@@ -273,10 +274,11 @@ def generate_acquisition_report(metadata, metadata_dir):
         f.write(f"- **Verification Status:** Complete\n")
         f.write(f"- **Purpose:** Key files for data integration only\n\n")
 
-        f.write("## Dataset 1: ESPN Soccer Data (Kaggle)\n\n")
+        f.write("## Dataset 1: ESPN Soccer Data (Local)\n\n")
         dataset1_files = [f for f in metadata['files'] if 'Dataset 1' in f['path']]
         f.write(f"- **Files Processed:** {len(dataset1_files)}\n")
         f.write(f"- **Source:** https://www.kaggle.com/datasets/excel4soccer/espn-soccer-data\n")
+        f.write(f"- **Storage:** Stored locally in repository at data/raw/Dataset 1/\n")
         f.write(f"- **License:** Check Kaggle dataset page\n\n")
 
         f.write("### Files\n\n")
@@ -344,10 +346,21 @@ def main():
     dataset1_ok = verify_dataset1(raw_data_dir)
     dataset2_ok = verify_dataset2(raw_data_dir)
 
+    # Allow pipeline to continue if at least one dataset is available
+    if not (dataset1_ok or dataset2_ok):
+        print("\n[ERROR] No datasets found!")
+        print("Please ensure at least one dataset is downloaded to data/raw/")
+        return False
+
     if not (dataset1_ok and dataset2_ok):
         print("\n[WARNING] Some datasets are missing or incomplete!")
-        print("Please ensure both datasets are downloaded to data/raw/")
-        return False
+        if not dataset1_ok:
+            print("  - Dataset 1 (Local) is missing or incomplete")
+            print("    Please ensure Dataset 1 files are in data/raw/Dataset 1/")
+        if not dataset2_ok:
+            print("  - Dataset 2 (GitHub) is missing")
+            print("    Run: python acquire_data.py to download")
+        print("\nContinuing with available datasets...")
 
     # Generate checksums
     metadata = generate_checksums_file(raw_data_dir, metadata_dir)
