@@ -73,8 +73,116 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
+#commented out the acquire_dataset1_kaggle method since dataset 1 is now stored locally on repo
+"""
+def acquire_dataset1_kaggle(self):
+      ""
+      Download Dataset 1 from Kaggle using kagglehub.
 
-class DataAcquisitionError(Exception):
+      Dataset: ESPN Soccer Data
+      Source: https://www.kaggle.com/datasets/excel4soccer/espn-soccer-data
+      ""
+      logger.info("="*70)
+      logger.info("ACQUIRING DATASET 1: ESPN Soccer Data (Kaggle)")
+      logger.info("="*70)
+
+      # Check credentials
+      if not self._check_kaggle_credentials():
+          logger.warning("Dataset 1 will be skipped due to missing credentials")
+          return
+
+      # Check if data already exists
+      expected_files = ['teams.csv', 'teamStats.csv', 'standings.csv', 'leagues.csv']
+      all_exist = all((self.dataset1_dir / f).exists() for f in expected_files)
+
+      if all_exist and not self.force_download:
+          logger.info("Dataset 1 files already exist. Use --force to re-download")
+          logger.info("Calculating checksums for existing files...")
+          for filename in expected_files:
+              filepath = self.dataset1_dir / filename
+              checksum = self._calculate_checksum(filepath)
+              relative_path = filepath.relative_to(self.base_dir)
+              self.checksums[str(relative_path)] = checksum
+              logger.info(f"  {filename}: {checksum[:16]}...")
+          return
+
+      # Download using kagglehub with correct API
+      try:
+          import kagglehub
+
+          logger.info("Downloading from Kaggle (this may take a few minutes)...")
+          logger.info("Dataset: excel4soccer/espn-soccer-data")
+
+          # Download entire dataset to kagglehub cache
+          download_path = kagglehub.dataset_download("excel4soccer/espn-soccer-data")
+          logger.info(f"Dataset downloaded to cache: {download_path}")
+
+          # Copy the files we need to our project directory
+          # Files are in the base_data subdirectory
+          source_dir = Path(download_path) / "base_data"
+
+          logger.info("Copying files to project directory...")
+          for filename in expected_files:
+              source_file = source_dir / filename
+              dest_file = self.dataset1_dir / filename
+
+              if source_file.exists():
+                  # Copy the file
+                  shutil.copy2(source_file, dest_file)
+
+                  # Calculate checksum
+                  checksum = self._calculate_checksum(dest_file)
+                  relative_path = dest_file.relative_to(self.base_dir)
+                  self.checksums[str(relative_path)] = checksum
+
+                  # Get file size
+                  size_mb = dest_file.stat().st_size / (1024 * 1024)
+
+                  logger.info(f"  [OK] {filename} ({size_mb:.2f} MB)")
+                  logger.info(f"       SHA-256: {checksum[:16]}...")
+              else:
+                  logger.warning(f"  [WARN] {filename} not found in downloaded dataset")
+
+          logger.info("Dataset 1 acquisition complete!")
+          logger.info(f"Files saved to: {self.dataset1_dir}")
+
+      except ImportError:
+          raise DataAcquisitionError(
+              "kagglehub not installed. Run: pip install kagglehub"
+          )
+      except Exception as e:
+          raise DataAcquisitionError(f"Failed to download Kaggle dataset: {e}")
+
+  Credential Checking (lines 145-194)
+
+  def _check_kaggle_credentials(self) -> bool:
+
+      #Check if Kaggle API credentials are configured.
+
+      #Checks multiple sources in order:
+      #1. Environment variables (KAGGLE_USERNAME, KAGGLE_KEY)
+      #2. kaggle.json file at ~/.kaggle/kaggle.json
+      
+      # Check environment variables first
+      has_env_vars = bool(os.getenv('KAGGLE_USERNAME') and os.getenv('KAGGLE_KEY'))
+
+      # Check for kaggle.json file
+      kaggle_json = Path.home() / '.kaggle' / 'kaggle.json'
+      has_json_file = kaggle_json.exists()
+
+      if has_env_vars:
+          logger.info("Kaggle API credentials found (environment variables)")
+          return True
+      elif has_json_file:
+          logger.info(f"Kaggle API credentials found ({kaggle_json})")
+          return True
+      else:
+          # [Warning messages omitted for brevity]
+          return False
+
+
+"""
+class DataAcquisitionError(Exception):#
     """Custom exception for data acquisition errors."""
     pass
 
