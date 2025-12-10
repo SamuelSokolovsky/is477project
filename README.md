@@ -43,7 +43,7 @@ Our analysis reveals:
 
 **For comprehensive findings, detailed statistics, and in-depth analysis, please review our complete results document:**
 
-📊 **[Project Results (outputs/project_results.md)](outputs/project_results.md)**
+ **[Project Results (outputs/project_results.md)](outputs/project_results.md)**
 
 This document provides:
 - Detailed quantitative findings across all 57,327 matches
@@ -325,8 +325,8 @@ This project implements **full pipeline automation** using:
 
 ### Outputs Generated
 
-**Temp Reports (6):**
-We used AI to generate these .md files to help us troubleshoot and document each phase:
+**Managerial Reports (6) - AI-Generated for Troubleshooting:**
+These markdown reports in `outputs/reports/` were generated using AI assistance for troubleshooting and monitoring purposes only. AI excels at formatting output data into readable reports. These are NOT primary research outputs:
 - acquisition_report.md
 - cleaning_report.md
 - integration_report.md
@@ -433,7 +433,7 @@ python scripts/06_visualize.py    # Visualization generation
 After successful execution, outputs are organized in:
 ```
 outputs/
-├── reports/          # 6 comprehensive markdown reports
+├── reports/          # 6 AI-generated markdown reports (troubleshooting only)
 ├── figures/
 │   ├── quality/      # Data quality visualizations
 │   ├── analysis/     # Model performance figures
@@ -512,7 +512,7 @@ is477project-main/
 ├── workflows/
 │   └── run_all.sh                # Bash script for sequential execution
 ├── outputs/
-│   ├── reports/                  # 6 generated markdown reports
+│   ├── reports/                  # 6 AI-generated reports (troubleshooting only)
 │   ├── figures/
 │   │   ├── quality/              # Quality assessment visualizations (3)
 │   │   ├── analysis/             # Model performance figures (3)

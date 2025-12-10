@@ -29,49 +29,18 @@ Requirements:
 
 Usage:
 ------
-    python scripts/01_acquire.py [--force] [--skip-dataset1] [--skip-github]
+    python scripts/01_acquire.py
 
-Options:
---------
-    --force          Re-download even if data exists (Dataset 2 only)
-    --skip-dataset1  Skip Dataset 1 verification
-    --skip-github    Skip GitHub dataset download
-    --verify-only    Only verify checksums, don't download
-
-Author: IS477 Student
+Author: Yongyang Fu
 Date: December 2025
 """
 
 import os
-import sys
 import hashlib
-import json
-import argparse
 import subprocess
 import shutil
 from pathlib import Path
 from datetime import datetime
-from typing import Dict, List, Tuple
-import logging
-
-# Try to load environment variables from .env file
-try:
-    from dotenv import load_dotenv
-    load_dotenv()  # Load .env file if it exists
-except ImportError:
-    # python-dotenv not installed, will rely on system environment variables
-    pass
-
-# Configure logging
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(levelname)s - %(message)s',
-    handlers=[
-        logging.FileHandler('data_acquisition.log'),
-        logging.StreamHandler(sys.stdout)
-    ]
-)
-logger = logging.getLogger(__name__)
 
 #commented out the acquire_dataset1_kaggle method since dataset 1 is now stored locally on repo
 """
@@ -162,7 +131,7 @@ def acquire_dataset1_kaggle(self):
       #Checks multiple sources in order:
       #1. Environment variables (KAGGLE_USERNAME, KAGGLE_KEY)
       #2. kaggle.json file at ~/.kaggle/kaggle.json
-      
+
       # Check environment variables first
       has_env_vars = bool(os.getenv('KAGGLE_USERNAME') and os.getenv('KAGGLE_KEY'))
 
@@ -182,486 +151,288 @@ def acquire_dataset1_kaggle(self):
 
 
 """
-class DataAcquisitionError(Exception):#
-    """Custom exception for data acquisition errors."""
-    pass
+
+# Setup directories
+base_dir = Path(__file__).parent.parent
+data_dir = base_dir / 'data'
+raw_dir = data_dir / 'raw'
+metadata_dir = data_dir / 'metadata'
+dataset1_dir = raw_dir / 'Dataset 1'
+dataset2_dir = raw_dir / 'Dataset 2'
+
+# Store checksums
+checksums = {}
 
 
-class SoccerDataAcquisition:
-    """Handles programmatic acquisition of soccer datasets."""
+def create_directories():
+    """Create necessary directory structure."""
+    for directory in [raw_dir, metadata_dir, dataset1_dir, dataset2_dir]:
+        directory.mkdir(parents=True, exist_ok=True)
+    print(f"Directory structure verified at: {data_dir}")
 
-    def __init__(self, force_download: bool = False):
-        """
-        Initialize data acquisition.
 
-        Args:
-            force_download: If True, re-download even if data exists
-        """
-        self.force_download = force_download
+def calculate_checksum(filepath):
+    """Calculate SHA-256 checksum of a file."""
+    sha256_hash = hashlib.sha256()
 
-        # Adjust base_dir to parent since we're in scripts/
-        self.base_dir = Path(__file__).parent.parent
-        self.data_dir = self.base_dir / 'data'
-        self.raw_dir = self.data_dir / 'raw'
-        self.metadata_dir = self.data_dir / 'metadata'
+    with open(filepath, "rb") as f:
+        # Read file in chunks to handle large files
+        for byte_block in iter(lambda: f.read(4096), b""):
+            sha256_hash.update(byte_block)
 
-        # Dataset-specific directories
-        self.dataset1_dir = self.raw_dir / 'Dataset 1'
-        self.dataset2_dir = self.raw_dir / 'Dataset 2'
+    return sha256_hash.hexdigest()
 
-        # Checksums storage
-        self.checksums: Dict[str, str] = {}
 
-        # Create directory structure
-        self._create_directories()
+def save_checksums():
+    """Save all checksums to file."""
+    checksum_file = metadata_dir / 'checksums.txt'
 
-    def _create_directories(self):
-        """Create necessary directory structure."""
-        for directory in [self.raw_dir, self.metadata_dir,
-                         self.dataset1_dir, self.dataset2_dir]:
-            directory.mkdir(parents=True, exist_ok=True)
-        logger.info(f"Directory structure verified at: {self.data_dir}")
+    with open(checksum_file, 'w') as f:
+        f.write("# SHA-256 Checksums for Soccer Analytics Dataset\n")
+        f.write(f"# Generated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n")
+        f.write("#" + "="*70 + "\n\n")
 
-    def _calculate_checksum(self, filepath: Path) -> str:
-        """
-        Calculate SHA-256 checksum of a file.
+        for filepath, checksum in sorted(checksums.items()):
+            f.write(f"{checksum}  {filepath}\n")
 
-        Args:
-            filepath: Path to file
+    print(f"Checksums saved to: {checksum_file}")
 
-        Returns:
-            SHA-256 hash as hex string
-        """
-        sha256_hash = hashlib.sha256()
 
-        with open(filepath, "rb") as f:
-            # Read file in chunks to handle large files
-            for byte_block in iter(lambda: f.read(4096), b""):
-                sha256_hash.update(byte_block)
+def verify_dataset1_local():
+    """
+    Verify Dataset 1 files exist locally and calculate checksums.
 
-        checksum = sha256_hash.hexdigest()
-        return checksum
+    Dataset: ESPN Soccer Data (stored locally, no download needed)
+    """
+    print("="*70)
+    print("VERIFYING DATASET 1: ESPN Soccer Data (Local)")
+    print("="*70)
 
-    def _save_checksums(self):
-        """Save all checksums to file."""
-        checksum_file = self.metadata_dir / 'checksums.txt'
+    expected_files = ['teams.csv', 'teamStats.csv', 'standings.csv', 'leagues.csv']
 
-        with open(checksum_file, 'w') as f:
-            f.write("# SHA-256 Checksums for Soccer Analytics Dataset\n")
-            f.write(f"# Generated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n")
-            f.write("#" + "="*70 + "\n\n")
+    if not dataset1_dir.exists():
+        print(f"WARNING: Dataset 1 directory not found: {dataset1_dir}")
+        print("Please ensure Dataset 1 files are stored in data/raw/Dataset 1/")
+        return False
 
-            for filepath, checksum in sorted(self.checksums.items()):
-                f.write(f"{checksum}  {filepath}\n")
+    print(f"Checking for Dataset 1 files in: {dataset1_dir}")
 
-        logger.info(f"Checksums saved to: {checksum_file}")
+    found_files = []
+    for filename in expected_files:
+        filepath = dataset1_dir / filename
+        if filepath.exists():
+            # Calculate checksum
+            checksum = calculate_checksum(filepath)
+            relative_path = filepath.relative_to(base_dir)
+            checksums[str(relative_path)] = checksum
 
-        # Also save as JSON for programmatic access
-        checksum_json = self.metadata_dir / 'checksums.json'
-        with open(checksum_json, 'w') as f:
-            json.dump({
-                'generated': datetime.now().isoformat(),
-                'checksums': self.checksums
-            }, f, indent=2)
+            # Get file size
+            size_mb = filepath.stat().st_size / (1024 * 1024)
 
-        logger.info(f"Checksums JSON saved to: {checksum_json}")
-
-    def verify_dataset1_local(self):
-        """
-        Verify Dataset 1 files exist locally and calculate checksums.
-
-        Dataset 1 is now stored in the repository - no download needed.
-        Dataset: ESPN Soccer Data
-        Source: https://www.kaggle.com/datasets/excel4soccer/espn-soccer-data
-        """
-        logger.info("="*70)
-        logger.info("VERIFYING DATASET 1: ESPN Soccer Data (Local)")
-        logger.info("="*70)
-
-        expected_files = ['teams.csv', 'teamStats.csv', 'standings.csv', 'leagues.csv']
-
-        if not self.dataset1_dir.exists():
-            logger.warning(f"Dataset 1 directory not found: {self.dataset1_dir}")
-            logger.warning("Please ensure Dataset 1 files are stored in data/raw/Dataset 1/")
-            return False
-
-        logger.info(f"Checking for Dataset 1 files in: {self.dataset1_dir}")
-
-        found_files = []
-        for filename in expected_files:
-            filepath = self.dataset1_dir / filename
-            if filepath.exists():
-                # Calculate checksum
-                checksum = self._calculate_checksum(filepath)
-                relative_path = filepath.relative_to(self.base_dir)
-                self.checksums[str(relative_path)] = checksum
-
-                # Get file size
-                size_mb = filepath.stat().st_size / (1024 * 1024)
-
-                logger.info(f"  [OK] {filename} ({size_mb:.2f} MB)")
-                logger.info(f"       SHA-256: {checksum[:16]}...")
-                found_files.append(filename)
-            else:
-                logger.warning(f"  [MISSING] {filename}")
-
-        if len(found_files) == len(expected_files):
-            logger.info("All Dataset 1 files found and verified!")
-            return True
+            print(f"  [OK] {filename} ({size_mb:.2f} MB)")
+            print(f"       SHA-256: {checksum[:16]}...")
+            found_files.append(filename)
         else:
-            logger.warning(f"Found {len(found_files)}/{len(expected_files)} expected files")
-            logger.warning("Some Dataset 1 files are missing!")
-            return False
+            print(f"  [MISSING] {filename}")
 
-    def acquire_dataset2_github(self):
-        """
-        Download Dataset 2 from GitHub repository.
-
-        Dataset: European Football Match Statistics
-        Source: https://github.com/datasets/football-datasets
-        """
-        logger.info("="*70)
-        logger.info("ACQUIRING DATASET 2: European Football Match Statistics (GitHub)")
-        logger.info("="*70)
-
-        repo_url = "https://github.com/datasets/football-datasets.git"
-        repo_dir = self.dataset2_dir / "football-datasets"
-
-        # Check if repository already exists
-        if repo_dir.exists() and not self.force_download:
-            logger.info("Dataset 2 repository already exists. Use --force to re-download")
-            logger.info("Updating repository...")
-
-            try:
-                # Git pull to update
-                result = subprocess.run(
-                    ['git', 'pull'],
-                    cwd=repo_dir,
-                    capture_output=True,
-                    text=True,
-                    check=True
-                )
-                logger.info(f"  {result.stdout.strip()}")
-            except subprocess.CalledProcessError as e:
-                logger.warning(f"Failed to update repository: {e.stderr}")
-        else:
-            # Clone repository
-            logger.info(f"Cloning repository: {repo_url}")
-            logger.info("This may take a few minutes...")
-
-            # Remove existing directory if force download
-            if repo_dir.exists():
-                shutil.rmtree(repo_dir)
-
-            try:
-                result = subprocess.run(
-                    ['git', 'clone', repo_url, str(repo_dir)],
-                    capture_output=True,
-                    text=True,
-                    check=True
-                )
-                logger.info("Repository cloned successfully!")
-            except subprocess.CalledProcessError as e:
-                raise DataAcquisitionError(f"Git clone failed: {e.stderr}")
-            except FileNotFoundError:
-                raise DataAcquisitionError(
-                    "Git not found. Please install Git: https://git-scm.com/"
-                )
-
-        # Verify datasets directory structure
-        datasets_dir = repo_dir / "datasets"
-
-        if not datasets_dir.exists():
-            raise DataAcquisitionError(f"Datasets directory not found: {datasets_dir}")
-
-        logger.info("Verifying league data structure...")
-
-        # Check individual league directories
-        leagues = ['premier-league', 'la-liga', 'serie-a', 'bundesliga', 'ligue-1']
-
-        total_files = 0
-        for league in leagues:
-            league_dir = datasets_dir / league
-            if league_dir.exists():
-                csv_files = list(league_dir.glob('season-*.csv'))
-                logger.info(f"  [OK] {league}: {len(csv_files)} season files")
-                total_files += len(csv_files)
-
-                # Calculate checksum for first file as sample
-                if csv_files:
-                    sample_file = csv_files[0]
-                    checksum = self._calculate_checksum(sample_file)
-                    relative_path = sample_file.relative_to(self.base_dir)
-                    self.checksums[str(relative_path)] = checksum
-            else:
-                logger.warning(f"  [WARN] {league} directory not found")
-
-        logger.info(f"Dataset 2 acquisition complete! Total season files: {total_files}")
+    if len(found_files) == len(expected_files):
+        print("All Dataset 1 files found and verified!")
         return True
+    else:
+        print(f"WARNING: Found {len(found_files)}/{len(expected_files)} expected files")
+        return False
 
-    def verify_checksums(self, checksum_file: Path = None):
-        """
-        Verify existing data against saved checksums.
 
-        Args:
-            checksum_file: Path to checksum file (default: metadata/checksums.txt)
-        """
-        if checksum_file is None:
-            checksum_file = self.metadata_dir / 'checksums.txt'
+def acquire_dataset2_github():
+    """Download Dataset 2 from GitHub."""
+    print("="*70)
+    print("ACQUIRING DATASET 2: European Football Match Statistics (GitHub)")
+    print("="*70)
 
-        if not checksum_file.exists():
-            logger.error(f"Checksum file not found: {checksum_file}")
-            return False
+    repo_url = "https://github.com/datasets/football-datasets.git"
+    repo_dir = dataset2_dir / "football-datasets"
 
-        logger.info("="*70)
-        logger.info("VERIFYING DATA INTEGRITY")
-        logger.info("="*70)
-
-        # Read saved checksums
-        saved_checksums = {}
-        with open(checksum_file, 'r') as f:
-            for line in f:
-                line = line.strip()
-                if line and not line.startswith('#'):
-                    parts = line.split(None, 1)
-                    if len(parts) == 2:
-                        checksum, filepath = parts
-                        saved_checksums[filepath] = checksum
-
-        logger.info(f"Loaded {len(saved_checksums)} checksums from file")
-
-        # Verify each file
-        all_valid = True
-        for filepath, expected_checksum in saved_checksums.items():
-            full_path = self.base_dir / filepath
-
-            if not full_path.exists():
-                logger.error(f"  [MISSING] {filepath}")
-                all_valid = False
-                continue
-
-            actual_checksum = self._calculate_checksum(full_path)
-
-            if actual_checksum == expected_checksum:
-                logger.info(f"  [OK] {filepath}")
-            else:
-                logger.error(f"  [FAIL] {filepath}")
-                logger.error(f"    Expected: {expected_checksum}")
-                logger.error(f"    Actual:   {actual_checksum}")
-                all_valid = False
-
-        if all_valid:
-            logger.info("All checksums verified successfully!")
-            return True
-        else:
-            logger.error("Checksum verification failed!")
-            return False
-
-    def generate_acquisition_report(self):
-        """Generate a detailed acquisition report in markdown format."""
-        report_file = self.metadata_dir / 'acquisition_report.md'
-
-        total_size_bytes = 0
-        dataset1_files = []
-
-        # Collect Dataset 1 info
-        if self.dataset1_dir.exists():
-            for file in self.dataset1_dir.glob('*.csv'):
-                size_bytes = file.stat().st_size
-                total_size_bytes += size_bytes
-                dataset1_files.append({
-                    'name': file.name,
-                    'size': size_bytes / (1024 * 1024),  # MB
-                    'path': str(file.relative_to(self.base_dir))
-                })
-
-        with open(report_file, 'w') as f:
-            f.write("# Data Acquisition Report\n\n")
-            f.write(f"**Generated:** {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n\n")
-            f.write("---\n\n")
-
-            f.write("## Summary\n\n")
-            f.write(f"- **Total Files Verified:** {len(dataset1_files)}\n")
-            f.write(f"- **Total Size:** {total_size_bytes / (1024 * 1024):.2f} MB\n")
-            f.write(f"- **Verification Status:** Complete\n")
-            f.write(f"- **Checksums Generated:** {len(self.checksums)}\n\n")
-
-            f.write("## Dataset 1: ESPN Soccer Data (Local)\n\n")
-            f.write(f"- **Files Verified:** {len(dataset1_files)}\n")
-            f.write(f"- **Source:** https://www.kaggle.com/datasets/excel4soccer/espn-soccer-data\n")
-            f.write(f"- **Storage:** Stored locally in repository at data/raw/Dataset 1/\n")
-            f.write(f"- **License:** Check Kaggle dataset page\n\n")
-
-            f.write("### Files\n\n")
-            for file_info in dataset1_files:
-                f.write(f"- `{file_info['name']}` - {file_info['size']:.2f} MB\n")
-
-            f.write("\n## Dataset 2: Football-Data.co.uk\n\n")
-            datasets_dir = self.dataset2_dir / "football-datasets" / "datasets"
-            if datasets_dir.exists():
-                all_leagues_file = datasets_dir / "all_leagues_all_seasons.csv"
-                if all_leagues_file.exists():
-                    size_mb = all_leagues_file.stat().st_size / (1024 * 1024)
-                    f.write(f"- **Main File:** all_leagues_all_seasons.csv ({size_mb:.2f} MB)\n")
-                    f.write(f"- **Source:** https://github.com/datasets/football-datasets\n")
-                    f.write(f"- **License:** PDDL 1.0 (Public Domain)\n\n")
-            else:
-                f.write("- **Status:** Not downloaded yet\n")
-                f.write("- Run with `--skip-dataset1` flag to download Dataset 2\n\n")
-
-            f.write("\n---\n\n")
-            f.write("## Verification\n\n")
-            f.write("All files have been verified with SHA-256 checksums.\n")
-            f.write("See `checksums.txt` for complete checksum listing.\n\n")
-
-        logger.info(f"Acquisition report saved to: {report_file}")
-
-    def run_acquisition(self, skip_dataset1: bool = False, skip_github: bool = False):
-        """
-        Run complete data acquisition workflow.
-
-        Args:
-            skip_dataset1: Skip Dataset 1 verification (local files)
-            skip_github: Skip GitHub dataset acquisition
-        """
-        logger.info("="*70)
-        logger.info("SOCCER ANALYTICS - DATA ACQUISITION")
-        logger.info("="*70)
-        logger.info(f"Base Directory: {self.base_dir}")
-        logger.info(f"Force Download: {self.force_download}")
-        logger.info("")
+    # Check if repository already exists
+    if repo_dir.exists():
+        print("Dataset 2 repository already exists. Updating...")
 
         try:
-            dataset1_ok = True
-            dataset2_ok = True
+            # Git pull to update
+            result = subprocess.run(
+                ['git', 'pull'],
+                cwd=repo_dir,
+                capture_output=True,
+                text=True,
+                check=True
+            )
+            print(f"  {result.stdout.strip()}")
+        except subprocess.CalledProcessError as e:
+            print(f"WARNING: Failed to update repository: {e.stderr}")
+    else:
+        # Clone repository
+        print(f"Cloning repository: {repo_url}")
+        print("This may take a few minutes...")
 
-            # Verify Dataset 1 (Local - no longer downloaded from Kaggle)
-            if not skip_dataset1:
-                dataset1_ok = self.verify_dataset1_local()
-                logger.info("")
-            else:
-                logger.info("Skipping Dataset 1 verification (--skip-dataset1)")
-                logger.info("")
+        try:
+            subprocess.run(
+                ['git', 'clone', repo_url, str(repo_dir)],
+                capture_output=True,
+                text=True,
+                check=True
+            )
+            print("Repository cloned successfully!")
+        except subprocess.CalledProcessError as e:
+            print(f"ERROR: Git clone failed: {e.stderr}")
+            return False
+        except FileNotFoundError:
+            print("ERROR: Git not found. Please install Git: https://git-scm.com/")
+            return False
 
-            # Acquire Dataset 2 (GitHub)
-            if not skip_github:
-                dataset2_ok = self.acquire_dataset2_github()
-                logger.info("")
-            else:
-                logger.info("Skipping GitHub dataset acquisition (--skip-github)")
-                logger.info("")
+    # Verify datasets directory structure
+    datasets_dir = repo_dir / "datasets"
 
-            # Save checksums
-            logger.info("="*70)
-            logger.info("SAVING CHECKSUMS")
-            logger.info("="*70)
-            self._save_checksums()
-            logger.info("")
+    if not datasets_dir.exists():
+        print(f"ERROR: Datasets directory not found: {datasets_dir}")
+        return False
 
-            # Generate report
-            logger.info("="*70)
-            logger.info("GENERATING ACQUISITION REPORT")
-            logger.info("="*70)
-            self.generate_acquisition_report()
-            logger.info("")
+    print("Verifying league data structure...")
 
-            # Final summary
-            logger.info("="*70)
-            logger.info("DATA ACQUISITION COMPLETE!")
-            logger.info("="*70)
-            logger.info(f"Data Location: {self.raw_dir}")
-            logger.info(f"Metadata Location: {self.metadata_dir}")
-            logger.info(f"Checksums: {len(self.checksums)} files")
-            logger.info("")
-            logger.info("Next Steps:")
-            logger.info("  1. Verify data integrity: python scripts/01_acquire.py --verify-only")
-            logger.info("  2. Run data cleaning: python scripts/02_clean.py")
-            logger.info("  3. Continue with analysis pipeline")
-            logger.info("")
+    # Check individual league directories
+    leagues = ['premier-league', 'la-liga', 'serie-a', 'bundesliga', 'ligue-1']
 
-            return dataset1_ok and dataset2_ok
+    total_files = 0
+    for league in leagues:
+        league_dir = datasets_dir / league
+        if league_dir.exists():
+            csv_files = list(league_dir.glob('season-*.csv'))
+            print(f"  [OK] {league}: {len(csv_files)} season files")
+            total_files += len(csv_files)
 
-        except Exception as e:
-            logger.error(f"Data acquisition failed: {e}")
-            raise
+            # Calculate checksum for first file as sample
+            if csv_files:
+                sample_file = csv_files[0]
+                checksum = calculate_checksum(sample_file)
+                relative_path = sample_file.relative_to(base_dir)
+                checksums[str(relative_path)] = checksum
+        else:
+            print(f"  [WARN] {league} directory not found")
+
+    print(f"Dataset 2 acquisition complete! Total season files: {total_files}")
+    return True
+
+
+def generate_acquisition_report():
+    """
+    Generate a detailed acquisition report in markdown format.
+
+    NOTE: This report generation code was created using AI assistance.
+    The reports generated in outputs/reports/ are managerial reports for
+    troubleshooting purposes only. AI is particularly effective at formatting
+    and presenting output data in readable markdown format.
+    """
+    report_file = metadata_dir / 'acquisition_report.md'
+
+    total_size_bytes = 0
+    dataset1_files = []
+
+    # Collect Dataset 1 info
+    if dataset1_dir.exists():
+        for file in dataset1_dir.glob('*.csv'):
+            size_bytes = file.stat().st_size
+            total_size_bytes += size_bytes
+            dataset1_files.append({
+                'name': file.name,
+                'size': size_bytes / (1024 * 1024),  # MB
+                'path': str(file.relative_to(base_dir))
+            })
+
+    with open(report_file, 'w') as f:
+        f.write("# Data Acquisition Report\n\n")
+        f.write(f"**Generated:** {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n\n")
+        f.write("---\n\n")
+
+        f.write("## Summary\n\n")
+        f.write(f"- **Total Files Verified:** {len(dataset1_files)}\n")
+        f.write(f"- **Total Size:** {total_size_bytes / (1024 * 1024):.2f} MB\n")
+        f.write(f"- **Verification Status:** Complete\n")
+        f.write(f"- **Checksums Generated:** {len(checksums)}\n\n")
+
+        f.write("## Dataset 1: ESPN Soccer Data (Local)\n\n")
+        f.write(f"- **Files Verified:** {len(dataset1_files)}\n")
+        f.write(f"- **Source:** https://www.kaggle.com/datasets/excel4soccer/espn-soccer-data\n")
+        f.write(f"- **Storage:** Stored locally in repository at data/raw/Dataset 1/\n")
+        f.write(f"- **License:** Check Kaggle dataset page\n\n")
+
+        f.write("### Files\n\n")
+        for file_info in dataset1_files:
+            f.write(f"- `{file_info['name']}` - {file_info['size']:.2f} MB\n")
+
+        f.write("\n## Dataset 2: Football-Data.co.uk\n\n")
+        datasets_dir = dataset2_dir / "football-datasets" / "datasets"
+        if datasets_dir.exists():
+            all_leagues_file = datasets_dir / "all_leagues_all_seasons.csv"
+            if all_leagues_file.exists():
+                size_mb = all_leagues_file.stat().st_size / (1024 * 1024)
+                f.write(f"- **Main File:** all_leagues_all_seasons.csv ({size_mb:.2f} MB)\n")
+                f.write(f"- **Source:** https://github.com/datasets/football-datasets\n")
+                f.write(f"- **License:** PDDL 1.0 (Public Domain)\n\n")
+        else:
+            f.write("- **Status:** Not downloaded yet\n\n")
+
+        f.write("\n---\n\n")
+        f.write("## Verification\n\n")
+        f.write("All files have been verified with SHA-256 checksums.\n")
+        f.write("See `checksums.txt` for complete checksum listing.\n\n")
+
+    print(f"Acquisition report saved to: {report_file}")
 
 
 def main():
-    """Main entry point for data acquisition script."""
-    parser = argparse.ArgumentParser(
-        description='Data Acquisition for IS477 Soccer Analytics Project',
-        formatter_class=argparse.RawDescriptionHelpFormatter,
-        epilog="""
-Examples:
-  python scripts/01_acquire.py                    # Verify Dataset 1 and download Dataset 2
-  python scripts/01_acquire.py --force            # Force re-download Dataset 2
-  python scripts/01_acquire.py --skip-dataset1    # Skip Dataset 1 verification
-  python scripts/01_acquire.py --verify-only      # Only verify checksums
+    """Main function to run data acquisition workflow."""
+    print("="*70)
+    print("SOCCER ANALYTICS - DATA ACQUISITION")
+    print("="*70)
+    print(f"Base Directory: {base_dir}")
+    print()
 
-Note: Dataset 1 is stored locally in the repository (no download needed)
+    # Create directories
+    create_directories()
+    print()
 
-For more information, see DATA_ACQUISITION.md
-        """
-    )
+    # Verify Dataset 1 (Local)
+    dataset1_ok = verify_dataset1_local()
+    print()
 
-    parser.add_argument(
-        '--force',
-        action='store_true',
-        help='Force re-download even if data exists (applies to Dataset 2 only)'
-    )
+    # Acquire Dataset 2 (GitHub)
+    dataset2_ok = acquire_dataset2_github()
+    print()
 
-    parser.add_argument(
-        '--skip-dataset1',
-        action='store_true',
-        help='Skip Dataset 1 verification (local files)'
-    )
+    # Save checksums
+    print("="*70)
+    print("SAVING CHECKSUMS")
+    print("="*70)
+    save_checksums()
+    print()
 
-    parser.add_argument(
-        '--skip-github',
-        action='store_true',
-        help='Skip GitHub dataset acquisition'
-    )
+    # Generate report
+    print("="*70)
+    print("GENERATING ACQUISITION REPORT")
+    print("="*70)
+    generate_acquisition_report()
+    print()
 
-    parser.add_argument(
-        '--verify-only',
-        action='store_true',
-        help='Only verify checksums, do not download'
-    )
-
-    args = parser.parse_args()
-
-    try:
-        acquirer = SoccerDataAcquisition(force_download=args.force)
-
-        if args.verify_only:
-            # Only verify checksums
-            success = acquirer.verify_checksums()
-            sys.exit(0 if success else 1)
-        else:
-            # Run full acquisition
-            success = acquirer.run_acquisition(
-                skip_dataset1=args.skip_dataset1,
-                skip_github=args.skip_github
-            )
-
-            logger.info("="*70)
-            logger.info("SUCCESS!")
-            logger.info("="*70)
-
-            sys.exit(0 if success else 1)
-
-    except KeyboardInterrupt:
-        logger.warning("\nAcquisition interrupted by user")
-        sys.exit(1)
-
-    except DataAcquisitionError as e:
-        logger.error(f"\nAcquisition Error: {e}")
-        sys.exit(1)
-
-    except Exception as e:
-        logger.error(f"\nUnexpected error: {e}")
-        logger.exception("Full traceback:")
-        sys.exit(1)
+    # Final summary
+    print("="*70)
+    print("DATA ACQUISITION COMPLETE!")
+    print("="*70)
+    print(f"Data Location: {raw_dir}")
+    print(f"Metadata Location: {metadata_dir}")
+    print(f"Checksums: {len(checksums)} files")
+    print()
+    print("Next Steps:")
+    print("  1. Run data cleaning: python scripts/02_clean.py")
+    print("  2. Continue with analysis pipeline")
+    print()
 
 
 if __name__ == "__main__":

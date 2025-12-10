@@ -244,8 +244,14 @@ def validate_integration(df_integrated, df_matches):
 
 
 def generate_integration_report(df_integrated, validation, output_dir):
-    """Generate integration report."""
+    """
+    Generate integration report.
 
+    NOTE: This report generation code was created using AI assistance.
+    The reports generated in outputs/reports/ are managerial reports for
+    troubleshooting purposes only. AI is particularly effective at formatting
+    and presenting output data in readable markdown format.
+    """
     report_file = output_dir / "integration_report.md"
 
     with open(report_file, 'w') as f:

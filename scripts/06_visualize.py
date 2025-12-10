@@ -409,6 +409,11 @@ def plot_correlation_heatmap(df, output_dir):
 def generate_summary_report(df, output_path):
     """
     Generate comprehensive visualization summary report.
+
+    NOTE: This report generation code was created using AI assistance.
+    The reports generated in outputs/reports/ are managerial reports for
+    troubleshooting purposes only. AI is particularly effective at formatting
+    and presenting output data in readable markdown format.
     """
     print("\n[9/9] Generating visualization summary report...")
 

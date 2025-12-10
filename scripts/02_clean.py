@@ -295,7 +295,14 @@ def create_team_mapping(df2_teams, df1_teams):
 
 
 def generate_cleaning_report(stats, output_dir):
-    """Generate cleaning report."""
+    """
+    Generate cleaning report.
+
+    NOTE: This report generation code was created using AI assistance.
+    The reports generated in outputs/reports/ are managerial reports for
+    troubleshooting purposes only. AI is particularly effective at formatting
+    and presenting output data in readable markdown format.
+    """
     report_file = output_dir / "cleaning_report.md"
 
     with open(report_file, 'w') as f:

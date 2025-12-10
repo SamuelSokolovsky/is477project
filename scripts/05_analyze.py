@@ -371,6 +371,11 @@ def generate_visualizations(models, X_train, y_test, predictions, results, outpu
 def generate_report(results, predictions, y_test, X_train, output_path):
     """
     Generate comprehensive analysis report.
+
+    NOTE: This report generation code was created using AI assistance.
+    The reports generated in outputs/reports/ are managerial reports for
+    troubleshooting purposes only. AI is particularly effective at formatting
+    and presenting output data in readable markdown format.
     """
     report = []
     report.append("# Analysis & Modeling Report\n")

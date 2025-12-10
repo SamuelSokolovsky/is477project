@@ -362,7 +362,14 @@ def create_visualizations(df, quality_metrics, output_dir):
 
 
 def generate_quality_report(quality_metrics, output_file):
-    """Generate comprehensive quality report."""
+    """
+    Generate comprehensive quality report.
+
+    NOTE: This report generation code was created using AI assistance.
+    The reports generated in outputs/reports/ are managerial reports for
+    troubleshooting purposes only. AI is particularly effective at formatting
+    and presenting output data in readable markdown format.
+    """
     print("\n[Generating Quality Report...]")
 
     with open(output_file, 'w') as f:
