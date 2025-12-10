@@ -1,0 +1,243 @@
+dataset2_name,standardized_name,matched_dataset1
+1860 munich,1860 munich,False
+aachen,aachen,False
+ajaccio,ajaccio,False
+ajaccio gfco,ajaccio gfco,False
+alaves,alaves,False
+albacete,albacete,False
+almeria,almeria,False
+amiens,amiens,False
+ancona,ancona,False
+angers,angers,False
+arles,arles,False
+arsenal,arsenal,False
+ascoli,ascoli,False
+aston villa,aston villa,False
+atalanta,atalanta,False
+ath bilbao,ath bilbao,False
+ath madrid,ath madrid,False
+augsburg,augsburg,False
+auxerre,auxerre,False
+barcelona,barcelona,False
+bari,bari,False
+barnsley,barnsley,False
+bastia,bastia,False
+bayern munich,bayern munich,False
+benevento,benevento,False
+betis,betis,False
+bielefeld,bielefeld,False
+birmingham,birmingham,False
+blackburn,blackburn,False
+blackpool,blackpool,False
+bochum,bochum,False
+bologna,bologna,False
+bolton,bolton,False
+bordeaux,bordeaux,False
+boulogne,boulogne,False
+bournemouth,bournemouth,False
+bradford,bradford,False
+braunschweig,braunschweig,False
+brentford,brentford,False
+brescia,brescia,False
+brest,brest,False
+brighton and hove albion,brighton and hove albion,False
+burnley,burnley,False
+cadiz,cadiz,False
+caen,caen,False
+cagliari,cagliari,False
+cannes,cannes,False
+cardiff,cardiff,False
+carpi,carpi,False
+catania,catania,False
+celta,celta,False
+cesena,cesena,False
+charlton,charlton,False
+chateauroux,chateauroux,False
+chelsea,chelsea,False
+chievo,chievo,False
+clermont,clermont,False
+como,como,False
+compostela,compostela,False
+cordoba,cordoba,False
+cottbus,cottbus,False
+coventry,coventry,False
+cremonese,cremonese,False
+crotone,crotone,False
+crystal palace,crystal palace,False
+darmstadt,darmstadt,False
+derby,derby,False
+dijon,dijon,False
+dortmund,dortmund,False
+dresden,dresden,False
+duisburg,duisburg,False
+dusseldorf,dusseldorf,False
+eibar,eibar,False
+eintracht frankfurt,eintracht frankfurt,False
+elche,elche,False
+empoli,empoli,False
+espanol,espanol,False
+everton,everton,False
+evian thonon gaillard,evian thonon gaillard,False
+extremadura,extremadura,False
+fc koln,fc koln,False
+fiorentina,fiorentina,False
+foggia,foggia,False
+fortuna dusseldorf,fortuna dusseldorf,False
+freiburg,freiburg,False
+frosinone,frosinone,False
+fulham,fulham,False
+genoa,genoa,False
+getafe,getafe,False
+gimnastic,gimnastic,False
+girona,girona,False
+granada,granada,False
+grenoble,grenoble,False
+greuther furth,greuther furth,False
+gueugnon,gueugnon,False
+guingamp,guingamp,False
+hamburg,hamburg,False
+hannover,hannover,False
+hansa rostock,hansa rostock,False
+heidenheim,heidenheim,False
+hercules,hercules,False
+hertha,hertha,False
+hoffenheim,hoffenheim,False
+holstein kiel,holstein kiel,False
+huddersfield,huddersfield,False
+huesca,huesca,False
+hull,hull,False
+ingolstadt,ingolstadt,False
+inter milan,inter milan,False
+ipswich,ipswich,False
+istres,istres,False
+juventus,juventus,False
+kaiserslautern,kaiserslautern,False
+karlsruhe,karlsruhe,False
+la coruna,la coruna,False
+las palmas,las palmas,False
+lazio,lazio,False
+le havre,le havre,False
+le mans,le mans,False
+lecce,lecce,False
+leeds,leeds,False
+leganes,leganes,False
+leicester,leicester,False
+leipzig,leipzig,False
+lens,lens,False
+lerida,lerida,False
+levante,levante,False
+leverkusen,leverkusen,False
+lille,lille,False
+liverpool,liverpool,False
+livorno,livorno,False
+logrones,logrones,False
+lorient,lorient,False
+luton,luton,False
+lyon,lyon,False
+mainz,mainz,False
+malaga,malaga,False
+mallorca,mallorca,False
+manchester city,manchester city,False
+manchester united,manchester united,False
+marseille,marseille,False
+martigues,martigues,False
+merida,merida,False
+messina,messina,False
+metz,metz,False
+mgladbach,mgladbach,False
+middlesbrough,middlesbrough,False
+milan,milan,False
+modena,modena,False
+monaco,monaco,False
+montpellier,montpellier,False
+monza,monza,False
+murcia,murcia,False
+nancy,nancy,False
+nantes,nantes,False
+napoli,napoli,False
+newcastle united,newcastle united,False
+nice,nice,False
+nimes,nimes,False
+norwich,norwich,False
+nottingham forest,nottingham forest,False
+novara,novara,False
+numancia,numancia,False
+nurnberg,nurnberg,False
+oldham,oldham,False
+osasuna,osasuna,False
+oviedo,oviedo,False
+paderborn,paderborn,False
+padova,padova,False
+palermo,palermo,False
+paris saint germain,paris saint germain,False
+parma,parma,False
+perugia,perugia,False
+pescara,pescara,False
+piacenza,piacenza,False
+portsmouth,portsmouth,False
+qpr,qpr,False
+rb leipzig,rb leipzig,False
+reading,reading,False
+real madrid,real madrid,False
+recreativo,recreativo,False
+reggiana,reggiana,False
+reggina,reggina,False
+reims,reims,False
+rennes,rennes,False
+roma,roma,False
+salamanca,salamanca,False
+salernitana,salernitana,False
+sampdoria,sampdoria,False
+santander,santander,False
+sassuolo,sassuolo,False
+schalke 04,schalke 04,False
+sedan,sedan,False
+sevilla,sevilla,False
+sheffield united,sheffield united,False
+sheffield weds,sheffield weds,False
+siena,siena,False
+sochaux,sochaux,False
+sociedad,sociedad,False
+southampton,southampton,False
+sp gijon,sp gijon,False
+spal,spal,False
+spezia,spezia,False
+st etienne,st etienne,False
+st pauli,st pauli,False
+stoke,stoke,False
+strasbourg,strasbourg,False
+stuttgart,stuttgart,False
+sunderland,sunderland,False
+swansea,swansea,False
+swindon,swindon,False
+tenerife,tenerife,False
+torino,torino,False
+tottenham hotspur,tottenham hotspur,False
+toulouse,toulouse,False
+treviso,treviso,False
+troyes,troyes,False
+udinese,udinese,False
+uerdingen,uerdingen,False
+ulm,ulm,False
+union berlin,union berlin,False
+unterhaching,unterhaching,False
+valencia,valencia,False
+valenciennes,valenciennes,False
+valladolid,valladolid,False
+vallecano,vallecano,False
+venezia,venezia,False
+verona,verona,False
+vicenza,vicenza,False
+villareal,villareal,False
+villarreal,villarreal,False
+watford,watford,False
+wattenscheid,wattenscheid,False
+werder,werder,False
+west brom,west brom,False
+west ham united,west ham united,False
+wigan,wigan,False
+wimbledon,wimbledon,False
+wolfsburg,wolfsburg,False
+wolverhampton wanderers,wolverhampton wanderers,False
+xerez,xerez,False
+zaragoza,zaragoza,False

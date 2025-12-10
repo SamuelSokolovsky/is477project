@@ -1,0 +1,13 @@
+# SHA-256 Checksums for Soccer Analytics Dataset
+# Generated: 2025-12-09 21:59:42
+#======================================================================
+
+9ec3ceac7086b3e3163c77ed5d17fda58e815018195078979d64c94942212e5b  data\raw\Dataset 1\leagues.csv
+5d8eac95a7daf02cfc6c7f2f0e0239ca9fa011c12568dd348e88cb239246963a  data\raw\Dataset 1\standings.csv
+43c17c6501589e61bbf52282ab49ec7f4e44b4b70c986432f2e9baa2fc0a830d  data\raw\Dataset 1\teamStats.csv
+2dab8fe4e3e2641ee7902d7c11e3e8a6276c750b4815d52c7e663ae4871b8f9a  data\raw\Dataset 1\teams.csv
+f80dc0f996c997cac80fc445814b6f208af74a76def8219f289a00cd7a4b31ba  data\raw\Dataset 2\football-datasets\datasets\bundesliga\season-0001.csv
+263d7212216c1250022f0f2f098b1d54e6e31659c5c85ef88b6b00641d9f8947  data\raw\Dataset 2\football-datasets\datasets\la-liga\season-0001.csv
+bda89360eb620646709a5565480bfb0336283af054a9a412f6b65fa6bf30e764  data\raw\Dataset 2\football-datasets\datasets\ligue-1\season-0001.csv
+aea3fe1d372314f40e33fbc5cdc78312428842ca68f71713d63e779da5b3cc44  data\raw\Dataset 2\football-datasets\datasets\premier-league\season-0001.csv
+0ab1e95a9af330a2be85d3c90b686489a686ad0d46762455022f2bb0611cbebc  data\raw\Dataset 2\football-datasets\datasets\serie-a\season-0001.csv

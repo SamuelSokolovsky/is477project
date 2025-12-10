@@ -1,0 +1,26 @@
+======================================================================
+DATA ACQUISITION REPORT
+======================================================================
+
+Generated: 2025-12-09 16:34:59
+
+DATASET 1: ESPN Soccer Data (Kaggle)
+----------------------------------------------------------------------
+Source: https://www.kaggle.com/datasets/excel4soccer/espn-soccer-data
+Location: C:\Users\Andre\Desktop\Andrew's Important Files\study\2025 Fall\IS 477\test_development2\is477project\data\raw\Dataset 1
+Files: 4
+Total Size: 12.89 MB
+  - leagues.csv (0.14 MB)
+  - standings.csv (0.62 MB)
+  - teams.csv (0.50 MB)
+  - teamStats.csv (11.63 MB)
+
+DATASET 2: European Football Match Statistics (GitHub)
+----------------------------------------------------------------------
+Source: https://github.com/datasets/football-datasets
+Location: C:\Users\Andre\Desktop\Andrew's Important Files\study\2025 Fall\IS 477\test_development2\is477project\data\raw\Dataset 2
+
+======================================================================
+Total Checksums Generated: 4
+Checksum File: C:\Users\Andre\Desktop\Andrew's Important Files\study\2025 Fall\IS 477\test_development2\is477project\data\metadata\checksums.txt
+======================================================================
