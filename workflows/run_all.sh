@@ -2,10 +2,16 @@
 # Complete Pipeline Execution Script
 # Run entire soccer analytics pipeline from start to finish
 
+# Change to project root directory (parent of workflows/)
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+PROJECT_DIR="$( cd "$SCRIPT_DIR/.." && pwd )"
+cd "$PROJECT_DIR"
+
 echo "=========================================="
 echo "SOCCER ANALYTICS PIPELINE"
 echo "=========================================="
 echo "Starting pipeline execution..."
+echo "Working directory: $PROJECT_DIR"
 echo ""
 
 # Set error handling

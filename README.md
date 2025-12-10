@@ -305,7 +305,6 @@ We trained three classification models to predict match outcomes (Home Win / Dra
 
 This project implements **full pipeline automation** using:
 - **6 Python scripts** (01_acquire.py → 06_visualize.py)
-- **Snakemake workflow** with dependency management
 - **Bash automation script** for sequential execution
 - **SHA-256 checksums** for data integrity verification
 
@@ -369,7 +368,6 @@ Required packages:
 - scikit-learn>=1.3.0
 - matplotlib>=3.7.0
 - seaborn>=0.12.0
-- snakemake>=7.32.0 (optional, for workflow automation)
 - kagglehub>=0.2.0 (for data acquisition)
 - requests>=2.31.0 (for data acquisition)
 
@@ -439,11 +437,6 @@ python scripts/03_integrate.py    # Data integration
 python scripts/04_quality.py      # Quality assessment
 python scripts/05_analyze.py      # Predictive modeling
 python scripts/06_visualize.py    # Visualization generation
-```
-
-**Option C: Use Snakemake workflow automation**
-```bash
-snakemake --cores 1
 ```
 
 **Note:** The acquisition step (`acquire_data.py`) should be run before the pipeline scripts, as they depend on the downloaded data.
@@ -530,7 +523,6 @@ is477project-main/
 │   ├── 05_analyze.py             # Predictive modeling (3 ML models)
 │   └── 06_visualize.py           # Comprehensive visualization suite
 ├── workflows/
-│   ├── Snakefile                 # Workflow automation with dependency management
 │   └── run_all.sh                # Bash script for sequential execution
 ├── outputs/
 │   ├── reports/                  # 6 generated markdown reports
@@ -673,13 +665,11 @@ is477project-main/
 
 7. Harris, C. R., Millman, K. J., van der Walt, S. J., et al. (2020). Array programming with NumPy. *Nature*, 585(7825), 357-362. https://doi.org/10.1038/s41586-020-2649-2
 
-8. Mölder, F., Jablonski, K. P., Letcher, B., et al. (2021). Sustainable data analysis with Snakemake. *F1000Research*, 10, 33. https://doi.org/10.12688/f1000research.29032.2
-
 ### Soccer Analytics Literature
 
-9. Constantinou, A. C., & Fenton, N. E. (2012). Solving the problem of inadequate scoring rules for assessing probabilistic football forecast models. *Journal of Quantitative Analysis in Sports*, 8(1). https://doi.org/10.1515/1559-0410.1418
+8. Constantinou, A. C., & Fenton, N. E. (2012). Solving the problem of inadequate scoring rules for assessing probabilistic football forecast models. *Journal of Quantitative Analysis in Sports*, 8(1). https://doi.org/10.1515/1559-0410.1418
 
-10. Rein, R., & Memmert, D. (2016). Big data and tactical analysis in elite soccer: future challenges and opportunities for sports science. *SpringerPlus*, 5(1), 1-13. https://doi.org/10.1186/s40064-016-3108-2
+9. Rein, R., & Memmert, D. (2016). Big data and tactical analysis in elite soccer: future challenges and opportunities for sports science. *SpringerPlus*, 5(1), 1-13. https://doi.org/10.1186/s40064-016-3108-2
 
 ## Contact
 

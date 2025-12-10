@@ -29,7 +29,6 @@ is477project-m/
 │   └── 06_visualize.py   # Visualizations
 ├── notebooks/            # Exploratory Jupyter notebooks
 ├── workflows/
-│   ├── Snakefile         # Snakemake workflow
 │   └── run_all.sh        # Bash script to run entire pipeline
 ├── outputs/
 │   ├── figures/          # Generated visualizations
@@ -263,32 +262,7 @@ merged_df = dataset1.merge(
 
 ### PHASE 7: Workflow Automation
 
-#### Task 7.1: Create Snakemake Workflow (`workflows/Snakefile`)
-```python
-rule all:
-    input:
-        "outputs/reports/final_report.html",
-        "outputs/figures/all_visualizations.png"
-
-rule acquire_data:
-    output:
-        "data/raw/dataset1.csv",
-        "data/raw/dataset2.csv"
-    script:
-        "../scripts/01_acquire.py"
-
-rule clean_data:
-    input:
-        "data/raw/dataset1.csv"
-    output:
-        "data/processed/dataset1_clean.csv"
-    script:
-        "../scripts/02_clean.py"
-
-# ... continue for all scripts
-```
-
-#### Task 7.2: Create Bash Run-All Script
+#### Task 7.1: Create Bash Run-All Script
 ```bash
 #!/bin/bash
 # workflows/run_all.sh
@@ -355,7 +329,6 @@ Essential packages:
 - scikit-learn
 - matplotlib
 - seaborn
-- snakemake (if used)
 
 #### Task 9.2: Upload Data to Box
 1. Upload `data/raw/` and `data/processed/` to Box
@@ -403,7 +376,7 @@ Structure:
 ### Must-Haves for Full Credit:
 - ✅ Clear Git history showing both team members' contributions
 - ✅ All scripts executable and documented
-- ✅ Complete workflow automation (Snakemake OR run_all.sh)
+- ✅ Complete workflow automation (run_all.sh)
 - ✅ Data uploaded to Box with working shared link
 - ✅ Comprehensive README.md (2700-4500 words)
 - ✅ Data quality report with findings

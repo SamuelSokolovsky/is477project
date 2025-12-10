@@ -123,8 +123,8 @@ Develop predictive models (classification and regression) evaluating match outco
 ### **Week 6 (Nov 17 – Nov 23)**  
 Visualize key findings; conduct data-quality analysis; prepare StatusReport.md.
 
-### **Week 7 (Nov 24 – Nov 30)**  
-Develop a reproducible workflow using Snakemake or an equivalent Run-All script; finalize metadata and documentation.
+### **Week 7 (Nov 24 – Nov 30)**
+Develop a reproducible workflow using a Run-All bash script; finalize metadata and documentation.
 
 ### **Week 8 (Dec 1 – Dec 7)**  
 Polish figures; complete README and FAIR metadata; upload final curated data to Box.

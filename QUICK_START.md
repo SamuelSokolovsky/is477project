@@ -54,10 +54,7 @@ Expected output:
 # Option A: Run all scripts sequentially
 bash workflows/run_all.sh
 
-# Option B: Use Snakemake workflow
-snakemake --cores 1
-
-# Option C: Run individual scripts
+# Option B: Run individual scripts
 python scripts/01_acquire.py
 python scripts/02_clean.py
 python scripts/03_integrate.py
@@ -110,7 +107,6 @@ python scripts/01_acquire.py
 
 - **Data Acquisition Details:** See `DATA_ACQUISITION.md`
 - **Full Project Documentation:** See `README.md`
-- **Pipeline Validation:** Run `python workflows/validate_pipeline.py`
 
 ---
 
@@ -118,7 +114,7 @@ python scripts/01_acquire.py
 
 ✅ **Programmatic data acquisition** - No manual downloads required
 ✅ **SHA-256 checksums** - Data integrity verification
-✅ **Automated workflow** - Snakemake + Bash scripts
+✅ **Automated workflow** - Bash scripts for sequential execution
 ✅ **Version control** - All code in Git
 ✅ **Dependency management** - `requirements.txt`
 ✅ **Comprehensive documentation** - README, DATA_ACQUISITION, this guide

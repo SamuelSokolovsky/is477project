@@ -97,7 +97,7 @@
 
 ## Dependency Graph
 
-The Snakemake workflow manages these dependencies automatically:
+The pipeline follows these dependencies:
 
 ```
 acquire_data
@@ -121,13 +121,7 @@ bash workflows/run_all.sh
 ```
 Runs all scripts sequentially from start to finish.
 
-### Option 2: Snakemake (Recommended)
-```bash
-snakemake --cores 4
-```
-Runs only necessary steps, skipping unchanged inputs.
-
-### Option 3: Individual Scripts
+### Option 2: Individual Scripts
 ```bash
 python scripts/01_acquire.py
 python scripts/02_clean.py
