@@ -3,7 +3,8 @@
 **Predictive Modeling and Performance Analysis Across 32 Years of European Soccer**
 
 ## Contributors
-- [Your Name] ([ORCID](https://orcid.org/))
+- [Yongyang Fu] ([ORCID](https://orcid.org/https://orcid.org/0009-0009-6222-4732))
+- [Sam Sokolovsky]
 - Course: IS 477 - Data Management, Curation, and Reproducibility
 - Institution: University of Illinois Urbana-Champaign
 - Semester: Fall 2025
@@ -37,6 +38,20 @@ Our analysis reveals:
 - **Away teams are scoring more**: Away goals increased from ~1.0 to ~1.35 per match (1995-2025)
 - **Shot statistics dominate** prediction: Shots on target is the #1 predictor across all models
 - **League variations exist**: La Liga and Serie A show strongest home advantage (~48%), while Premier League is most competitive (~45%)
+
+### Detailed Findings and Quantitative Results
+
+**For comprehensive findings, detailed statistics, and in-depth analysis, please review our complete results document:**
+
+📊 **[Project Results (outputs/project_results.md)](outputs/project_results.md)**
+
+This document provides:
+- Detailed quantitative findings across all 57,327 matches
+- Comprehensive model performance analysis and evaluation metrics
+- In-depth data quality assessment results
+- League-specific statistical breakdowns
+- Complete methodology documentation
+- References to all generated visualizations and reports
 
 ## Data Profile
 
@@ -310,7 +325,8 @@ This project implements **full pipeline automation** using:
 
 ### Outputs Generated
 
-**Reports (6):**
+**Temp Reports (6):**
+We used AI to generate these .md files to help us troubleshoot and document each phase:
 - acquisition_report.md
 - cleaning_report.md
 - integration_report.md
@@ -371,37 +387,8 @@ Required packages:
 - kagglehub>=0.2.0 (for data acquisition)
 - requests>=2.31.0 (for data acquisition)
 
-**3. Set up Kaggle API credentials (one-time setup - OPTIONAL)**
 
-> **Note:** Kaggle credentials are optional. If not provided, the project will automatically skip Dataset 1 and use only Dataset 2 (GitHub data). The pipeline will still work with 57,000+ matches!
-
-For detailed instructions, see [KAGGLE_SETUP.md](KAGGLE_SETUP.md). Quick setup:
-
-**Option 1: Environment Variables (Recommended)**
-```bash
-# 1. Copy .env.example to .env
-cp .env.example .env
-
-# 2. Edit .env and add your credentials:
-# KAGGLE_USERNAME=your_username
-# KAGGLE_KEY=your_api_key
-
-# 3. Get credentials from: https://www.kaggle.com/settings
-```
-
-**Option 2: kaggle.json File**
-```bash
-# 1. Go to https://www.kaggle.com/settings
-# 2. Click "Create New API Token"
-# 3. Save kaggle.json to:
-#    - Linux/Mac: ~/.kaggle/kaggle.json
-#    - Windows: C:\Users\<USERNAME>\.kaggle\kaggle.json
-
-# On Linux/Mac, set permissions:
-chmod 600 ~/.kaggle/kaggle.json
-```
-
-**4. Acquire datasets programmatically**
+**3. Acquire datasets programmatically**
 
 This project uses **fully automated data acquisition** for complete reproducibility:
 
@@ -653,17 +640,6 @@ is477project-main/
 
 2. Excel4Soccer. (2024). *ESPN soccer data*. Kaggle. https://www.kaggle.com/datasets/excel4soccer/espn-soccer-data
 
-### Software & Libraries
-
-3. McKinney, W. (2010). Data structures for statistical computing in Python. *Proceedings of the 9th Python in Science Conference*, 56-61. https://doi.org/10.25080/Majora-92bf1922-00a
-
-4. Pedregosa, F., Varoquaux, G., Gramfort, A., Michel, V., Thirion, B., Grisel, O., ... & Duchesnay, É. (2011). Scikit-learn: Machine learning in Python. *Journal of Machine Learning Research*, 12, 2825-2830.
-
-5. Hunter, J. D. (2007). Matplotlib: A 2D graphics environment. *Computing in Science & Engineering*, 9(3), 90-95. https://doi.org/10.1109/MCSE.2007.55
-
-6. Waskom, M. L. (2021). seaborn: statistical data visualization. *Journal of Open Source Software*, 6(60), 3021. https://doi.org/10.21105/joss.03021
-
-7. Harris, C. R., Millman, K. J., van der Walt, S. J., et al. (2020). Array programming with NumPy. *Nature*, 585(7825), 357-362. https://doi.org/10.1038/s41586-020-2649-2
 
 ### Soccer Analytics Literature
 
@@ -674,15 +650,15 @@ is477project-main/
 ## Contact
 
 For questions, issues, or collaboration inquiries:
-- **GitHub Issues:** [Open an issue](https://github.com/[username]/is477project/issues)
-- **Email:** [your-email@illinois.edu]
-- **ORCID:** [https://orcid.org/]
+- **GitHub Issues:** [Open an issue](https://github.com/SamuelSokolovsky/is477project/issues)
+- **Email:** [yf14@illinois.edu]
+- **ORCID:** [https://orcid.org/0009-0009-6222-4732]
 
 ---
 
 **Project Completion:** December 2025
 **Course:** IS 477 - Data Management, Curation, and Reproducibility
 **Institution:** University of Illinois Urbana-Champaign, School of Information Sciences
-**Instructor:** [Instructor Name]
+**Instructor:** [Nicola Carboni]
 
 *This project demonstrates best practices in reproducible research, data curation, and transparent documentation for computational research workflows.*
