@@ -24,6 +24,28 @@ The second dataset supplements the first by providing team names, team statistic
 
 After combining the datasets, we had a combined dataset containing 38 columns across several categories which included match identifiers, team names that were standardized as well as original, goals scored, halftime scores, shots, shots on target, fouls, corners, yellow and red cards, referee assignments, and several calculated features such as shot accuracy, goal differential, and binary outcome indicators. Since neither dataset had unique match identifiers originally, we generated deterministic IDs based on match date, league, and team names. This made sure that every match in the integrated dataset could be referenced across scripts and analyses.
 
+**Integrated Schema (38 columns):**
+
+*Core Fields (8):*
+- match_id, match_date, season, league, home_team, away_team, home_team_original, away_team_original
+
+*Match Results (6):*
+- home_goals, away_goals, result (H/D/A), halftime_home_goals, halftime_away_goals, halftime_result
+
+*Shot Statistics (6):*
+- home_shots, away_shots, home_shots_on_target, away_shots_on_target, home_shot_accuracy, away_shot_accuracy
+
+*Other Match Events (8):*
+- home_fouls, away_fouls, home_corners, away_corners, home_yellow_cards, away_yellow_cards, home_red_cards, away_red_cards
+
+*Derived Features (11):*
+- goal_differential, shot_differential, shots_on_target_differential, home_win (binary), away_win (binary), draw (binary), plus 5 more analytical features
+
+*Metadata (1):*
+- referee (81% missing - not assigned in older seasons)
+
+For a comprehensive reference of all fields, data types, valid ranges, and sources, please see our **data dictionary** at `docs/data_dictionary.md`. This document provides detailed descriptions of each column, including transformation notes, data quality information, and known issues for each field in the integrated dataset.
+
 All data is organized in a structured directory layout which shows the differences between raw data, processed data, and metadata. Raw files are excluded from GitHub through `.gitignore` to comply with licensing and storage constraints. Processed data such as `integrated_dataset.csv`, team name mappings, and acquisition metadata are retained because they can be regenerated programmatically. The system allows any user to reproduce the complete dataset without manual downloads simply by running the acquisition script.
 
 Together, these datasets support a wide range of analyses,from descriptive statistics to machine learning models,and their integration reflects practices in schema alignment, standardization, and ethical data reuse.
@@ -52,6 +74,18 @@ Third, league-level comparisons showed that each league has its own statistical 
 
 These findings show how the combined dataset allow for both predictive and descriptive insights into large-scale soccer behavior.
 
+For comprehensive findings, detailed statistics, and in-depth analysis, please review our complete results document:
+
+**[Project Results (outputs/project_results.md)](outputs/project_results.md)**
+
+This document provides:
+- Detailed quantitative findings across all 57,327 matches
+- Comprehensive model performance analysis and evaluation metrics
+- In-depth data quality assessment results
+- League-specific statistical breakdowns
+- Complete methodology documentation
+- References to all generated visualizations and reports
+
 
 ## Future Work
 
@@ -64,9 +98,13 @@ Finally, the development of real-time prediction systems could allow for minute-
 
 ## Reproducing the Analysis
 
+For a visual overview of the complete data pipeline and workflow dependencies, please refer to the **workflow diagram** at `docs/workflow_diagram.md`. This diagram illustrates the six-stage process from data acquisition through visualization, showing how each script connects and what outputs are generated at each stage.
+
 Anyone can reproduce the full workflow by running these steps in a terminal one by one:
 
-git clone https://github.com/SamuelSokolovsky/is477project.git
+Note that the main branch is required to reproduce the entire project using the latest version of scripts and methods
+
+git clone --branch main --single-branch https://github.com/SamuelSokolovsky/is477project.git
 cd is477project
 pip install -r requirements.txt
 python scripts/01_acquire.py
@@ -91,7 +129,7 @@ Rein, R., & Memmert, D. (2016). Big data and tactical analysis in elite soccer. 
 Code getting data using API from kaggle
 
 Directory structure
-test_development2/
+  your_file_name/
   └── is477project/
       ├── scripts/          
 	├──01_acquire ← Main Kaggle download script
