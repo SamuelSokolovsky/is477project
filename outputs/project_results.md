@@ -543,6 +543,7 @@ The findings contribute to soccer analytics literature by providing quantitative
 
 **For questions or collaboration opportunities, contact:**
 - Yongyang Fu: yf14@illinois.edu
+- Samuel Sokolovsky: samuel40@illinois.edu
 - ORCID: https://orcid.org/0009-0009-6222-4732
 - GitHub: https://github.com/SamuelSokolovsky/is477project
 
